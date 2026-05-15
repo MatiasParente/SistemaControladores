@@ -10,6 +10,8 @@ class Estado extends Model
 {
     use HasFactory;
 
+    protected $table = 'estado';
+
     protected $fillable = ['tipoEstado'];
 
     public function declaracion(): HasMany

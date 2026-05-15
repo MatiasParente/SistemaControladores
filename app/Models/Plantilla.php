@@ -10,14 +10,16 @@ class Plantilla extends Model
 {
     use HasFactory;
 
+    protected $table = 'plantilla';
+
     protected $fillable = [
-        'idDeclaracion', 
-        'tipoPlantilla', 
-        'direccionArchivo'
+        'idDeclaracion',
+        'tipoPlantilla',
+        'direccionArchivo',
     ];
 
     public function declaracion(): BelongsTo
     {
-        return $this->belongsTo(Declaracion::class);
+        return $this->belongsTo(Declaracion::class, 'idDeclaracion');
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class EstadoController extends Controller
 {
-    //
+    public function index()
+    {
+        return Inertia::render('Estados/Index', [
+            'estados' => Estado::all(),
+        ]);
+    }
 }

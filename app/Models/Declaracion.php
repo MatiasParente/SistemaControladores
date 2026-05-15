@@ -11,7 +11,7 @@ class Declaracion extends Model
 {
     use HasFactory;
 
-    protected $table = 'declaraciones';
+    protected $table = 'declaracion';
 
     protected $fillable = [
         'idEmpresa',
@@ -27,12 +27,12 @@ class Declaracion extends Model
 
     public function empresa(): BelongsTo
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsTo(Empresa::class, 'idEmpresa');
     }
 
     public function estado(): BelongsTo
     {
-        return $this->belongsTo(Estado::class);
+        return $this->belongsTo(Estado::class, 'idEstado');
     }
 
     public function plantillas(): HasMany

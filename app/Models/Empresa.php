@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Empresa extends Model
 {
+    protected $table = 'empresa';
+
     use HasFactory;
 
     protected $fillable = [
@@ -17,14 +19,13 @@ class Empresa extends Model
         'logo',
     ];
 
-    public function declaracion(): HasMany
-    {
-        return $this->hasMany(Declaracion::class);
-    }
-
     public function user(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'empresa_usuario')
-                    ->withTimestamps();
+        return $this->belongsToMany(User::class, 'empresa_usuario', 'idEmpresa', 'user_id')->withTimestamps();
+    }
+
+    public function declaracion(): HasMany
+    {
+        return $this->hasMany(Declaracion::class, 'idEmpresa');
     }
 }
