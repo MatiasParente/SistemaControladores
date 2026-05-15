@@ -16,6 +16,7 @@ class Empresa extends Model
     protected $fillable = [
         'rut',
         'razonSocial',
+        'direccion',
         'logo',
     ];
 

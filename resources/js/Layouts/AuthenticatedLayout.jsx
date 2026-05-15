@@ -5,14 +5,19 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
+//header es lo de arriba de las paginas, childeren es el contendio de la pagina que si se borra queda todo en blanco
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
 
+    //Esto sirve para los celulares, para abrir y cerrar el menu lateral
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        //utilizamos flex para crear el layout con dos columnas, la primera es el menu lateral y la segunda es el contenido de la pagina
+        <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
+            {/* Menu lateral */}
+            <aside className="w-64 bg-gray-200 dark:bg-gray-800">
             <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
@@ -161,6 +166,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </div>
             </nav>
+            </aside>
 
             {header && (
                 <header className="bg-white shadow dark:bg-gray-800">

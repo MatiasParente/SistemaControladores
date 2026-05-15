@@ -15,6 +15,7 @@ return new class extends Migration
         $table->id();
         $table->string('rut')->unique();
         $table->string('razonSocial');
+        $table->string('direccion');
         $table->text('logo')->nullable();
         $table->timestamps();
     });

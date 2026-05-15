@@ -9,6 +9,11 @@ use App\Http\Controllers\DeclaracionController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\UserController;
+use App\Models\Declaracion;
+use App\Models\Estado;
+use App\Models\Empresa;
+use App\Models\User;
+use App\Models\Plantilla;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -20,8 +25,15 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Dashboard', [
+        //traemos los datos de empresa y el nombre del estado, ademas de ordenar por fecha mas reciente y limitar a 5 declaraciones
+        'declaracionesRecientes' => Declaracion::with(['empresa', 'estado'])
+            ->latest()
+            ->take(5)
+            ->get(),
+        ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

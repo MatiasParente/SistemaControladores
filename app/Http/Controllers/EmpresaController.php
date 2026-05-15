@@ -30,6 +30,7 @@ class EmpresaController extends Controller
         $request->validate([
             'rut' => 'required|unique:empresa',
             'razonSocial' => 'required',
+            'direccion' => 'required',
         ]);
 
         Auth::user()->empresas()->create($request->all());
@@ -65,6 +66,7 @@ class EmpresaController extends Controller
         $request->validate([
             'rut' => 'required',
             'razonSocial' => 'required',
+            'direccion' => 'required',
         ]);
 
         $empresa = Empresa::query()->find($id);

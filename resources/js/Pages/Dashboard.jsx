@@ -1,7 +1,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import StatCard from '@/Components/Dashboard/StatCard';
+import RecentDeclarations from '@/Components/Dashboard/RecentDeclarations';
 
-export default function Dashboard() {
+export default function Dashboard({ declaracionesRecientes }) {
     return (
         <AuthenticatedLayout
             header={
@@ -10,14 +12,19 @@ export default function Dashboard() {
                 </h2>
             }
         >
-            <Head title="Dashboard" />
+            <Head title="Dashboard" /> 
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            You're logged in!
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <StatCard label="Total Declaraciones" value="142" />
+                            <StatCard label="Monto Procesado" value="$45.2k" />
+                            <StatCard label="Pendientes" value="8" />
                         </div>
+
+                        <RecentDeclarations lista={declaracionesRecientes} />
+
                     </div>
                 </div>
             </div>
