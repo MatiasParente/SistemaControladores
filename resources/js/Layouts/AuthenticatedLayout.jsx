@@ -10,173 +10,156 @@ export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
 
     //Esto sirve para los celulares, para abrir y cerrar el menu lateral
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
-        //utilizamos flex para crear el layout con dos columnas, la primera es el menu lateral y la segunda es el contenido de la pagina
-        <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
-            {/* Menu lateral */}
-            <aside className="w-64 bg-gray-200 dark:bg-gray-800">
-            <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                                </Link>
-                            </div>
+    <div className="min-h-screen flex bg-[#070A13] text-gray-100">
+        
+        {/* 1. SIDEBAR ESCRITORIO (Se muestra de md en adelante) */}
+        <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+            <SidebarContent />
+        </aside>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none dark:text-gray-500 dark:hover:bg-gray-900 dark:hover:text-gray-400 dark:focus:bg-gray-900 dark:focus:text-gray-400"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800 dark:text-gray-200">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+        {/* 2. SIDEBAR MÓVIL (Con animación de apertura/cierre) */}
+        <div className={`fixed inset-0 z-50 flex md:hidden transition-opacity duration-300 ${
+            isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}>
+            {/* Fondo oscuro traslúcido detrás del menú */}
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+            
+            {/* Menú deslizante */}
+            <aside className={`relative w-64 max-w-xs flex-col flex transition-transform duration-300 ${
+                isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}>
+                <SidebarContent />
             </aside>
+        </div>
 
+        {/* 3. CONTENIDO PRINCIPAL (Se desplaza a la derecha en escritorio con md:pl-64) */}
+        <div className="flex-1 flex flex-col md:pl-64">
+            
+            {/* Barra superior móvil con botón hamburguesa */}
+            <header className="h-16 flex items-center justify-between px-6 bg-[#0B1121] border-b border-gray-800 md:hidden">
+                <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white">
+                    {/* Icono de menú hamburguesa (3 líneas) */}
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <span className="font-bold text-emerald-400">CtrlConta</span>
+                <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white">
+                    {user.name.charAt(0)}
+                </div>
+            </header>
+
+            {/* Encabezado de la página */}
             {header && (
-                <header className="bg-white shadow dark:bg-gray-800">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
+                <header className="py-6 px-8 bg-[#070A13]">
+                    {header}
                 </header>
             )}
 
-            <main>{children}</main>
+            {/* Contenido dinámico */}
+            <main className="flex-1 p-8">
+                {children}
+            </main>
+        </div>
+    </div>
+);
+    
+    }
+
+    function SidebarContent({ activeRoute }) {
+    return (
+        <div className="flex flex-col h-full bg-[#0B1121] text-gray-300 p-6">
+            {/* Logo de CtrlConta */}
+            <div className="flex items-center gap-3 mb-10">
+                <div className="w-10 h-10 bg-gradient-to-tr from-emerald-400 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg">
+                    {/* Icono del logo */}
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <span className="text-xl font-bold text-white tracking-wider">CtrlConta</span>
+            </div>
+
+            <nav className="flex-1 space-y-2">
+                <Link 
+                    href={route('dashboard')} 
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        route().current('dashboard') 
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                            : 'hover:bg-gray-800/50 hover:text-white'
+                    }`}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+
+                    Dashboard
+                </Link>
+
+                <Link 
+                    href={route('empresas.index')} 
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        route().current('empresas.*') 
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                            : 'hover:bg-gray-800/50 hover:text-white'
+                    }`}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+
+                    Empresas
+                </Link>
+
+                <Link 
+                    href={route('usuarios.index')} 
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        route().current('usuarios.*') 
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                            : 'hover:bg-gray-800/50 hover:text-white'
+                    }`}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    
+                    Usuarios
+                </Link>
+                <Link 
+                    href={route('declaraciones.index')} 
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        route().current('declaraciones.*') 
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                            : 'hover:bg-gray-800/50 hover:text-white'
+                    }`}
+                >
+
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+
+                    Declaraciones
+                </Link>
+            </nav>
+
+            <div className="pt-6 border-t border-gray-800">
+                <Link 
+                    href={route('logout')} 
+                    method="post" 
+                    as="button" 
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 hover:text-red-400 transition-all duration-200"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+
+                    Cerrar Sesión
+                </Link>
+            </div>
         </div>
     );
 }
+
