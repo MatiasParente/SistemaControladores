@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import StatCard from '@/Components/Dashboard/StatCard';
-import RecentDeclarations from '@/Components/Dashboard/RecentDeclarations';
+import StatCard from '@/Components/Declaracion/StatCard';
+import RecentDeclarations from '@/Components/Declaracion/RecentDeclarations';
 
 export default function Dashboard({ declaracionesRecientes }) {
     return (
@@ -23,7 +23,7 @@ export default function Dashboard({ declaracionesRecientes }) {
                             <StatCard label="Pendientes" value="8" />
                         </div>
 
-                        <RecentDeclarations lista={declaracionesRecientes} />
+                        <RecentDeclarations declaraciones={declaracionesRecientes} />
 
                     </div>
                 </div>

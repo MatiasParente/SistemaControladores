@@ -16,5 +16,6 @@ class EstadoSeeder extends Seeder
         Estado::create(['tipoEstado' => 'Pendiente']);
         Estado::create(['tipoEstado' => 'En Proceso']);
         Estado::create(['tipoEstado' => 'Finalizada']);
+        Estado::create(['tipoEstado' => 'Rechazada']);
     }
 }

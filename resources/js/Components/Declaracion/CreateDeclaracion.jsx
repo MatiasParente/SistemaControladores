@@ -1,0 +1,204 @@
+import { useState, useEffect } from 'react';
+import { useForm } from '@inertiajs/react';
+import { Building2, Calendar, FileSpreadsheet, Check, AlertCircle, Loader2 } from "lucide-react";
+
+export default function CreateDeclaracion({ empresas = [], estados = [] }) {
+
+    const estadoPendiente = estados.find(e => e.tipoEstado === 'Pendiente') || estados[0];
+    
+    // Año por defecto
+    const [selectedYear, setSelectedYear] = useState('2026');
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        idEmpresa: '',
+        fechaFiscalInicio: '2026-01-01',
+        fechaFiscalFin: '2026-12-31',
+        idEstado: estadoPendiente ? estadoPendiente.id : '',
+        Original: null,
+        IRAE: null,
+        Patrimonio: null,
+        Balance: null,
+    });
+
+    // Sincronizar el estado por defecto cuando carguen los estados reales de la BD y al cambiar archivos
+    useEffect(() => {
+        if (estados.length > 0) {
+            let filesCount = 0;
+            if (data.Original) filesCount++;
+            if (data.IRAE) filesCount++;
+            if (data.Patrimonio) filesCount++;
+            if (data.Balance) filesCount++;
+
+            let targetEstado = 'Pendiente';
+            if (filesCount === 4) {
+                targetEstado = 'Finalizada';
+            } else if (filesCount > 0) {
+                targetEstado = 'En Proceso';
+            }
+
+            const estado = estados.find(e => e.tipoEstado === targetEstado) || estados[0];
+            if (estado && data.idEstado !== estado.id) {
+                setData('idEstado', estado.id);
+            }
+        }
+    }, [data.Original, data.IRAE, data.Patrimonio, data.Balance, estados]);
+
+    //  calculams fecha inicio y final del año fiscal
+    const handleYearChange = (year) => {
+        setSelectedYear(year);
+        setData(prev => ({
+            ...prev,
+            fechaFiscalInicio: `${year}-01-01`,
+            fechaFiscalFin: `${year}-12-31`
+        }));
+    };
+
+    const handleFileChange = (tipo, file) => {
+        setData(tipo, file);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('declaraciones.store'), {
+            onSuccess: () => {
+                reset('Original', 'IRAE', 'Patrimonio', 'Balance', 'idEmpresa');
+                alert('¡Declaración creada con éxito!');
+            },
+            onError: (err) => {
+                console.error("Errores al crear declaración:", err);
+            }
+        });
+    };
+
+    const plantillasDisponibles = [
+        { key: 'Original', label: 'Original' },
+        { key: 'IRAE', label: 'IRAE' },
+        { key: 'Patrimonio', label: 'Impuesto Patrimonio' },
+        { key: 'Balance', label: 'Balance Banco' },
+    ];
+
+    const currentEstado = estados.find(e => e.id === data.idEstado);
+    const estadoName = currentEstado ? currentEstado.tipoEstado : 'Pendiente';
+
+    const getStatusColor = (statusName) => {
+        if (statusName === 'Pendiente') return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+        if (statusName === 'En Proceso') return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+        if (statusName === 'Rechazada') return 'bg-red-500/10 text-red-500 border-red-500/20';
+        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+    };
+
+    return (
+        <div className="bg-[#0B1121] text-slate-200 p-8 rounded-3xl border border-gray-800 w-full max-w-md shadow-2xl">
+            {/* Título */}
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <span className="text-emerald-400 text-3xl font-light">+</span> Nueva Declaración
+            </h3>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Empresa */}
+                <div className="flex flex-col gap-2">
+                    <label className="text-slate-400 text-sm font-medium">Empresa</label>
+                    <div className="relative">
+                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
+                        <select 
+                            value={data.idEmpresa}
+                            onChange={(e) => setData('idEmpresa', e.target.value)}
+                            className={`w-full bg-[#0F172A] text-slate-300 pl-12 pr-10 py-3.5 rounded-xl border ${errors.idEmpresa ? 'border-red-500' : 'border-gray-800'} focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer text-sm`}
+                        >
+                            <option value="" disabled>Selecciona una empresa</option>
+                            {empresas.map((emp) => (
+                                <option key={emp.id} value={emp.id} className="bg-[#0f172a]">
+                                    {emp.razonSocial} ({emp.rut})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    {errors.idEmpresa && (
+                        <span className="text-xs text-red-500 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5" /> {errors.idEmpresa}
+                        </span>
+                    )}
+                </div>
+
+                {/* Año Fiscal */}
+                <div className="flex flex-col gap-2">
+                    <label className="text-slate-400 text-sm font-medium">Año Fiscal</label>
+                    <div className="relative">
+                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
+                        <select 
+                            value={selectedYear}
+                            onChange={(e) => handleYearChange(e.target.value)}
+                            className="w-full bg-[#0F172A] text-slate-300 pl-12 pr-10 py-3.5 rounded-xl border border-gray-800 focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer text-sm"
+                        >
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* Estado Inicial */}
+                <div className="flex flex-col gap-2">
+                    <label className="text-slate-400 text-sm font-medium">Estado</label>
+                    <div className={`w-full flex items-center gap-3 pl-4 pr-10 py-3.5 rounded-xl border text-sm font-semibold transition-colors ${getStatusColor(estadoName)}`}>
+                        <Building2 className="w-5 h-5 opacity-70" />
+                        {estadoName}
+                    </div>
+                </div>
+
+                {/* Planillas */}
+                <div className="space-y-3 pt-2">
+                    <label className="text-slate-400 text-sm font-medium block">Planillas (Archivos Excel)</label>
+                    
+                    <div className="grid grid-cols-1 gap-2.5">
+                        {plantillasDisponibles.map((plantilla) => (
+                            <label 
+                                key={plantilla.key} 
+                                className={`flex items-center justify-between p-3.5 bg-[#0F172A] rounded-xl border ${data[plantilla.key] ? 'border-emerald-500/40 bg-emerald-500/5' : 'border-gray-800 hover:border-gray-700'} cursor-pointer transition-all duration-200`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${data[plantilla.key] ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-800 text-slate-400'}`}>
+                                        <FileSpreadsheet className="w-4 h-4" />
+                                    </div>
+                                    <span className="text-slate-200 text-sm font-medium">{plantilla.label}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    {data[plantilla.key] ? (
+                                        <span className="text-emerald-400 text-xs font-semibold flex items-center gap-1">
+                                            <Check className="w-3.5 h-3.5" /> Cargado
+                                        </span>
+                                    ) : (
+                                        <span className="text-slate-500 text-xs hover:text-slate-300">Subir archivo</span>
+                                    )}
+                                </div>
+                                <input 
+                                    type="file" 
+                                    className="hidden" 
+                                    accept=".xlsx, .xls"
+                                    onChange={(e) => handleFileChange(plantilla.key, e.target.files[0])}
+                                />
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Botón de Guardar */}
+                <button 
+                    type="submit" 
+                    disabled={processing}
+                    className="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 disabled:bg-emerald-500/50 text-slate-900 font-bold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                >
+                    {processing ? (
+                        <>
+                            <Loader2 className="w-5 h-5 animate-spin" /> Guardando...
+                        </>
+                    ) : (
+                        "Guardar Declaración"
+                    )}
+                </button>
+            </form>
+        </div>
+    );
+}

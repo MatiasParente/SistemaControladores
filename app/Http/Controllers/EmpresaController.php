@@ -6,29 +6,53 @@ use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\Declaracion;
 
 class EmpresaController extends Controller
 {
-    public function index()
-    {
-        // if para si es admin que muestre todas las empresas y si no que muestre solo las de el usuario
-        if (Auth::user()->is_admin == false) {
-            $empresa = Auth::user()->empresas;
-        } else {
-            $empresa = Empresa::all();
+    public function index(Request $request) 
+{
+    $buscar = $request->buscar;
+    $user = Auth::user();
+    
+    // Consulta base de datos
+    $queryEmpresas = $user->empresas()->withCount([
+        'declaracion as en_pendiente_count' => function ($query) {
+            $query->where('idEstado', 1);
+        },
+        'declaracion as en_proceso_count' => function ($query) {
+            $query->where('idEstado', 2);
+        },
+        'declaracion as finalizadas_count' => function ($query) {
+            $query->where('idEstado', 3);
+        },
+        'declaracion as rechazadas_count' => function ($query) {
+            $query->where('idEstado', 5);
         }
+    ]);
 
-        // retorna la vista empresas con las empresas
-        return Inertia::render('Empresas/Index', [
-            'empresas' => $empresa,
-        ]);
+    // Buscador por nombre o RUT
+    if ($buscar) {
+        $queryEmpresas->where(function($query) use ($buscar) {
+            $query->where('razonSocial', 'ILIKE', "%{$buscar}%")
+                  ->orWhere('rut', 'LIKE', "%{$buscar}%");
+        });
     }
 
-    // required = obligatorio, //unique = unico
+    $empresasFiltradas = $queryEmpresas->get(); 
+    
+    return Inertia::render('Empresas/Index', [
+        'empresas' => $user->empresas, 
+        'empresasFiltradas' => $empresasFiltradas,
+        'filtroActual' => $buscar
+    ]);
+}
+
+
     public function store(Request $request)
     {
         $request->validate([
-            'rut' => 'required|unique:empresa',
+            'rut' => 'required|unique:empresas',
             'razonSocial' => 'required',
             'direccion' => 'required',
         ]);
@@ -41,20 +65,17 @@ class EmpresaController extends Controller
     public function destroy($id)
     {
         $user = Auth::user();
+        $empresa = Empresa::find($id);
 
-        // agregamos un query para buscar la empresa en la base de datos
-        $empresa = Empresa::query()->find($id);
-
-        if (! $empresa) {
+        if (!$empresa) {
             return redirect()->back()->with('message', 'Empresa no encontrada');
         }
-        $esDuenio = $user->empresas->contains($id);
-
-        if (! $user->is_admin && ! $esDuenio) {
+        
+        if (!$user->empresas->contains($id)) {
             return redirect()->back()->with('message', 'No tienes permiso para eliminar esta empresa');
         }
-        Empresa::destroy($id);
 
+        Empresa::destroy($id);
         return redirect()->back()->with('message', 'Empresa eliminada con éxito');
     }
 
@@ -62,25 +83,23 @@ class EmpresaController extends Controller
     {
         $user = Auth::user();
 
-        // validamos los datos de la empresa para que no ponga datos vacios
         $request->validate([
             'rut' => 'required',
             'razonSocial' => 'required',
             'direccion' => 'required',
         ]);
 
-        $empresa = Empresa::query()->find($id);
+        $empresa = Empresa::find($id);
 
-        if (! $empresa) {
+        if (!$empresa) {
             return redirect()->back()->with('message', 'Empresa no encontrada');
         }
-        $esDuenio = $user->empresas->contains($id);
 
-        if (! $user->is_admin && ! $esDuenio) {
+        if (!$user->empresas->contains($id)) {
             return redirect()->back()->with('message', 'No tienes permiso para editar esta empresa');
         }
-        $empresa->update($request->all());
 
+        $empresa->update($request->all());
         return redirect()->back()->with('message', 'Empresa editada con éxito');
     }
 }

@@ -25,12 +25,21 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard', [
-        //traemos los datos de empresa y el nombre del estado, ademas de ordenar por fecha mas reciente y limitar a 5 declaraciones
-        'declaracionesRecientes' => Declaracion::with(['empresa', 'estado'])
-            ->latest()
-            ->take(5)
-            ->get(),
+        $user = auth()->user();
+        $query = Declaracion::with(['empresa', 'estado'])->latest();
+        
+        $estadoRechazada = Estado::where('tipoEstado', 'Rechazada')->first();
+        if ($estadoRechazada) {
+            $query->where('idEstado', '!=', $estadoRechazada->id);
+        }
+
+        if ($user->is_admin == false) {
+            $empresaIds = $user->empresas->pluck('id')->toArray();
+            $query->whereIn('idEmpresa', $empresaIds);
+        }
+        
+        return Inertia::render('Dashboard', [
+            'declaracionesRecientes' => $query->take(5)->get(),
         ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

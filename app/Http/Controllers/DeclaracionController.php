@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Declaracion;
+use App\Models\Empresa;
+use App\Models\Estado;
+use App\Models\Plantilla;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -11,15 +14,47 @@ class DeclaracionController extends Controller
 {
     public function index()
     {
-        if (Auth::user()->is_admin == false) {
-            $empresaIds = Auth::user()->empresas->pluck('id')->toArray();
-            $declaracion = Declaracion::whereIn('idEmpresa', $empresaIds)->get();
-        } else {
-            $declaracion = Declaracion::all();
+        $user = Auth::user();
+        
+        $estadoFinalizada = Estado::where('tipoEstado', 'Finalizada')->first();
+        $estadoPendiente = Estado::where('tipoEstado', 'Pendiente')->first();
+        $estadoRechazada = Estado::where('tipoEstado', 'Rechazada')->first();
+        
+        $queryStats = Declaracion::query();
+        if ($estadoRechazada) {
+            $queryStats->where('idEstado', '!=', $estadoRechazada->id);
         }
+
+        $query = Declaracion::with(['empresa', 'estado', 'plantillas'])->latest();
+        if ($estadoRechazada) {
+            $query->where('idEstado', '!=', $estadoRechazada->id);
+        }
+        $declaracion = $query->get();
+        
+        $empresas = Empresa::all();
+
+        $estados = Estado::all();
+
+        $stats = [
+            'total' => $queryStats->count(),
+            'finalizadas_mes' => (clone $queryStats)
+                ->where('idEstado', $estadoFinalizada ? $estadoFinalizada->id : 0)
+                ->whereMonth('updated_at', now()->month)
+                ->whereYear('updated_at', now()->year)
+                ->count(),
+            'pendientes' => (clone $queryStats)
+                ->where('idEstado', $estadoPendiente ? $estadoPendiente->id : 0)
+                ->count(),
+        ];
+
+        $declaracionesRecientes = (clone $queryStats)->with(['empresa', 'estado'])->latest()->take(5)->get();
 
         return Inertia::render('Declaraciones/Index', [
             'declaraciones' => $declaracion,
+            'empresas' => $empresas,
+            'estados' => $estados,
+            'stats' => $stats,
+            'declaracionesRecientes' => $declaracionesRecientes,
         ]);
     }
 
@@ -32,6 +67,8 @@ class DeclaracionController extends Controller
             'idEstado' => 'required|exists:estado,id',
             'Original' => 'nullable|file|mimes:xlsx,xls',
             'IRAE' => 'nullable|file|mimes:xlsx,xls',
+            'Patrimonio' => 'nullable|file|mimes:xlsx,xls',
+            'Balance' => 'nullable|file|mimes:xlsx,xls',
         ]);
 
         $declaracion = Declaracion::create($request->all());
@@ -51,6 +88,8 @@ class DeclaracionController extends Controller
             }
         }
 
+        $declaracion->evaluarEstado();
+
         return redirect()->back()->with('message', 'Declaracion creada con éxito');
     }
 
@@ -61,13 +100,13 @@ class DeclaracionController extends Controller
             return redirect()->back()->with('message', 'Declaracion no encontrada');
         }
 
-        $esDuenio = Auth::user()->empresas->contains($declaracion->idEmpresa);
-
-        if (! Auth::user()->is_admin && ! $esDuenio) {
-            return redirect()->back()->with('message', 'No tienes permiso para eliminar esta declaración');
+        $estadoRechazada = Estado::where('tipoEstado', 'Rechazada')->first();
+        if ($estadoRechazada) {
+            $declaracion->idEstado = $estadoRechazada->id;
+            $declaracion->save();
+        } else {
+            Declaracion::destroy($id);
         }
-
-        Declaracion::destroy($id);
 
         return redirect()->back()->with('message', 'Declaracion eliminada con éxito');
     }
@@ -86,11 +125,6 @@ class DeclaracionController extends Controller
             return redirect()->back()->with('message', 'Declaracion no encontrada');
         }
 
-        $esDuenio = Auth::user()->empresas->contains($declaracion->idEmpresa);
-
-        if (! Auth::user()->is_admin && ! $esDuenio) {
-            return redirect()->back()->with('message', 'No tienes permiso para editar esta declaración');
-        }
 
         $declaracion->update($request->all());
 
@@ -104,10 +138,6 @@ class DeclaracionController extends Controller
             return redirect()->back()->with('message', 'Declaracion no encontrada');
         }
 
-        $esDuenio = Auth::user()->empresas->contains($declaracion->idEmpresa);
-        if (! Auth::user()->is_admin && ! $esDuenio) {
-            return redirect()->back()->with('message', 'No tienes permiso para editar esta declaración');
-        }
 
         return Inertia::render('Declaraciones/Edit', [
             'declaracion' => $declaracion,

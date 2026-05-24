@@ -37,6 +37,28 @@ class Declaracion extends Model
 
     public function plantillas(): HasMany
     {
-        return $this->hasMany(Plantilla::class);
+        return $this->hasMany(Plantilla::class, 'idDeclaracion');
+    }
+
+    public function evaluarEstado()
+    {
+        if ($this->estado && $this->estado->tipoEstado === 'Rechazada') {
+            return;
+        }
+
+        $count = $this->plantillas()->count();
+        $tipoEstado = 'Pendiente';
+        
+        if ($count >= 4) {
+            $tipoEstado = 'Finalizada';
+        } elseif ($count > 0) {
+            $tipoEstado = 'En Proceso';
+        }
+
+        $nuevoEstado = Estado::where('tipoEstado', $tipoEstado)->first();
+        if ($nuevoEstado && $this->idEstado !== $nuevoEstado->id) {
+            $this->idEstado = $nuevoEstado->id;
+            $this->save();
+        }
     }
 }

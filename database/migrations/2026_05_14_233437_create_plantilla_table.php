@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('plantilla', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('idDeclaracion')->constrained('declaracion');
+            $table->foreignId('idDeclaracion')->constrained('declaracion')->onDelete('cascade');
             $table->string('tipoPlantilla');
             $table->string('direccionArchivo'); 
             $table->timestamps();
