@@ -6,7 +6,12 @@ import FilterEmpresa from '@/Components/Empresa/FiltEmpresa';
 export default function Index({ empresasFiltradas, filtroActual }) {
     return (
         <AuthenticatedLayout
-            header={<h2 className="text-2xl font-bold text-white">Empresas</h2>}
+            header={<div className="flex justify-between items-center">
+                    <div>
+                        <h2 className="text-3xl font-bold text-white">Empresas</h2>
+                        <p className="text-sm text-slate-400 mt-1">Gestión de empresas, información y estado.</p>
+                    </div>
+                </div>}
         >
             <Head title="Empresas" />
             

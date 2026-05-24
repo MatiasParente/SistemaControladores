@@ -8,18 +8,19 @@ export default function Edit({ mustVerifyEmail, status }) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-2xl font-bold text-white">
-                    Perfil
-                </h2>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h2 className="text-3xl font-bold text-white">Perfil</h2>
+                        <p className="text-sm text-slate-400 mt-1">Información de usuario.</p>
+                    </div>
+                </div>
             }
         >
             <Head title="Profile" />
 
             <div className="space-y-8">
-                {/* Cambiado a grid de 1 columna en móvil y 3 en pantallas grandes, igual al original pero con espaciado consistente */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     
-                    {/* Tarjeta 1: Información de Perfil */}
                     <div className="bg-[#0b1329] border border-[#1e293b] p-6 shadow-xl rounded-xl">
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
@@ -28,12 +29,9 @@ export default function Edit({ mustVerifyEmail, status }) {
                         />
                     </div>
 
-                    {/* Tarjeta 2: Actualizar Contraseña */}
                     <div className="bg-[#0b1329] border border-[#1e293b] p-6 shadow-xl rounded-xl">
                         <UpdatePasswordForm className="max-w-xl text-slate-200" />
                     </div>
-
-                    {/* Tarjeta 3: Eliminar Cuenta */}
                     <div className="bg-[#0b1329] border border-[#1e293b] p-6 shadow-xl rounded-xl">
                         <DeleteUserForm className="max-w-xl text-slate-200" />
                     </div>

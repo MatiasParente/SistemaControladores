@@ -7,12 +7,15 @@ export default function Dashboard({ declaracionesRecientes }) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Dashboard
-                </h2>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h2 className="text-3xl font-bold text-white">Principal</h2>
+                        <p className="text-sm text-slate-400 mt-1">Resumen general de los controladores.</p>
+                    </div>
+                </div>
             }
         >
-            <Head title="Dashboard" /> 
+            <Head title="Principal" /> 
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
