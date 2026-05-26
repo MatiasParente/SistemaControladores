@@ -6,6 +6,12 @@ export default function RecentDeclarations({ declaraciones = [] }) {
     const fileInputRef = useRef(null);
     const [uploadState, setUploadState] = useState({ declaracionId: null, tipo: null });
 
+    // Paginación
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const totalPages = Math.max(1, Math.ceil(declaraciones.length / itemsPerPage));
+    const currentDeclaraciones = declaraciones.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     const triggerUpload = (declId, tipo) => {
         setUploadState({ declaracionId: declId, tipo });
         if (fileInputRef.current) {
@@ -101,7 +107,7 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-800/50">
-                            {declaraciones.map((decl) => {
+                            {currentDeclaraciones.map((decl) => {
                                 const anioFiscal = new Date(decl.fechaFiscalInicio).getFullYear();
                                 
                                 return (
@@ -181,6 +187,28 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                             })}
                         </tbody>
                     </table>
+                </div>
+            )}
+            
+            {declaraciones.length > 0 && totalPages > 1 && (
+                <div className="flex items-center justify-between mt-6 px-2">
+                    <button 
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Anterior
+                    </button>
+                    <span className="text-sm text-slate-400">
+                        Página <span className="text-slate-200 font-semibold">{currentPage}</span> de <span className="text-slate-200 font-semibold">{totalPages}</span>
+                    </span>
+                    <button 
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Siguiente
+                    </button>
                 </div>
             )}
         </div>

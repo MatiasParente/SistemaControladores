@@ -1,8 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import ListEmpresa from '@/Components/Empresa/ListEmpresa';
-import FilterEmpresa from '@/Components/Empresa/FiltEmpresa';
-
+import FilterEmpresa from '@/Components/Empresa/FilterEmpresa';
+import CreateEmpresa from '@/Components/Empresa/CreateEmpresa';
 export default function Index({ empresasFiltradas, filtroActual }) {
     return (
         <AuthenticatedLayout
@@ -20,6 +20,9 @@ export default function Index({ empresasFiltradas, filtroActual }) {
                     <FilterEmpresa 
                         filtroActual={filtroActual} 
                     />
+                </div>
+                <div className='w-50'>
+                    <CreateEmpresa />
                 </div>
             </div>
 

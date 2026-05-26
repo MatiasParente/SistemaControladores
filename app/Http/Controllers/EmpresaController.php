@@ -52,7 +52,7 @@ class EmpresaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'rut' => 'required|unique:empresas',
+            'rut' => 'required|unique:empresa',
             'razonSocial' => 'required',
             'direccion' => 'required',
         ]);

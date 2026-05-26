@@ -3,9 +3,10 @@ import { Head, router } from '@inertiajs/react';
 import CreateDeclaracion from '@/Components/Declaracion/CreateDeclaracion';
 import StatCard from '@/Components/Declaracion/StatCard';
 import RecentDeclarations from '@/Components/Declaracion/RecentDeclarations';
+import FilterDeclaracion from '@/Components/Declaracion/FilterDeclaracion';
 import { FileSpreadsheet, Trash2, Calendar, Download, FileText, TrendingUp, AlertCircle } from 'lucide-react';
 
-export default function Index({ declaraciones = [], empresas = [], estados = [], stats}) {
+export default function Index({ declaraciones = [], empresas = [], estados = [], stats, filtroActual, filtroActualEstado, filtroActualAño}) {
     
     const getStatusColor = (statusName) => {
         if (statusName === 'Pendiente') {
@@ -51,6 +52,10 @@ export default function Index({ declaraciones = [], empresas = [], estados = [],
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     <div className="lg:col-span-2 space-y-6">
+                        <FilterDeclaracion 
+                        filtroActual={filtroActual} 
+                        filtroActualEstado={filtroActualEstado} 
+                        filtroActualAño={filtroActualAño} />
                         <RecentDeclarations declaraciones={declaraciones} />
                     </div>
                     <div className="w-full">

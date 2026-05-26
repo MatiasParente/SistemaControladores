@@ -20,7 +20,6 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
         Balance: null,
     });
 
-    // Sincronizar el estado por defecto cuando carguen los estados reales de la BD y al cambiar archivos
     useEffect(() => {
         if (estados.length > 0) {
             let filesCount = 0;
@@ -139,7 +138,6 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                     </div>
                 </div>
 
-                {/* Estado Inicial */}
                 <div className="flex flex-col gap-2">
                     <label className="text-slate-400 text-sm font-medium">Estado</label>
                     <div className={`w-full flex items-center gap-3 pl-4 pr-10 py-3.5 rounded-xl border text-sm font-semibold transition-colors ${getStatusColor(estadoName)}`}>

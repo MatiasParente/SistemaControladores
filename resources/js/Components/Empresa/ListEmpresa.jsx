@@ -6,6 +6,12 @@ export default function ListEmpresa({ empresas = [] }) {
     // Estado para controlar qué fila está en modo edición
     const [editingId, setEditingId] = useState(null);
 
+    // Paginación
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const totalPages = Math.max(1, Math.ceil(empresas.length / itemsPerPage));
+    const currentEmpresas = empresas.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     // para enviar y recibir los datos actualizados
     const { data, setData, put, processing, reset } = useForm({
         razonSocial: '',
@@ -37,12 +43,25 @@ export default function ListEmpresa({ empresas = [] }) {
     };
 
     const eliminarEmpresa = (id) => {
-        if (confirm('¿Estás seguro de que deseas eliminar esta empresa?')) {
-            router.delete(route('empresas.destroy', id), {
-                onSuccess: () => alert('Empresa eliminada con éxito.')
-            }); 
-        }   
-    };
+    if (confirm('¿Estás seguro de que deseas eliminar esta empresa?')) {
+        router.delete(route('empresas.destroy', id), {
+            onSuccess: () => {
+                // calculamos cuántos elementos quedan en total tras borrar uno
+                const remainingItems = empresas.length - 1;
+                
+                // calculamos cuántas páginas reales existen ahora
+                const newTotalPages = Math.max(1, Math.ceil(remainingItems / itemsPerPage));
+                
+                // retrocedemos una pagina
+                if (currentPage > newTotalPages) {
+                    setCurrentPage(newTotalPages);
+                }
+                
+                alert('Empresa eliminada con éxito.');
+            }
+        }); 
+    }   
+};
 
     return (
         <div className="bg-[#0B1121] p-6 rounded-3xl border border-gray-800 shadow-xl">
@@ -65,7 +84,7 @@ export default function ListEmpresa({ empresas = [] }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {empresas.map((empresa) => {
+                        {currentEmpresas.map((empresa) => {
                             const isEditing = editingId === empresa.id;
 
                             return (
@@ -150,9 +169,9 @@ export default function ListEmpresa({ empresas = [] }) {
                                             )}
 
                                             {empresa.finalizadas_count === 0 && 
-                                             empresa.en_proceso_count === 0 && 
-                                             empresa.rechazadas_count === 0 && 
-                                             empresa.en_pendiente_count === 0 && (
+                                            empresa.en_proceso_count === 0 && 
+                                            empresa.rechazadas_count === 0 && 
+                                            empresa.en_pendiente_count === 0 && (
                                                 <span className="text-xs text-slate-500 italic">Sin declaraciones</span>
                                             )}
                                         </div>
@@ -204,6 +223,27 @@ export default function ListEmpresa({ empresas = [] }) {
                     </tbody>
                 </table>
             </div>
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between mt-6 px-2">
+                    <button 
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Anterior
+                    </button>
+                    <span className="text-sm text-slate-400">
+                        Página <span className="text-slate-200 font-semibold">{currentPage}</span> de <span className="text-slate-200 font-semibold">{totalPages}</span>
+                    </span>
+                    <button 
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Siguiente
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

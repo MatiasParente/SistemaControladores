@@ -12,26 +12,97 @@ use Inertia\Inertia;
 
 class DeclaracionController extends Controller
 {
-    public function index()
+    public function dashboard()
     {
-        $user = Auth::user();
+        $user = auth()->user();
         
+        $estadoRechazada = Estado::where('tipoEstado', 'Rechazada')->first();
         $estadoFinalizada = Estado::where('tipoEstado', 'Finalizada')->first();
         $estadoPendiente = Estado::where('tipoEstado', 'Pendiente')->first();
-        $estadoRechazada = Estado::where('tipoEstado', 'Rechazada')->first();
-        
+        $estadoEnProceso = Estado::where('tipoEstado', 'En Proceso')->first();
+
+        $query = Declaracion::with(['empresa', 'estado', 'plantillas'])->latest();
         $queryStats = Declaracion::query();
+        
         if ($estadoRechazada) {
+            $query->where('idEstado', '!=', $estadoRechazada->id);
             $queryStats->where('idEstado', '!=', $estadoRechazada->id);
         }
 
-        $query = Declaracion::with(['empresa', 'estado', 'plantillas'])->latest();
-        if ($estadoRechazada) {
-            $query->where('idEstado', '!=', $estadoRechazada->id);
-        }
-        $declaracion = $query->get();
-        
         $empresas = Empresa::all();
+        
+        $stats = [
+            'total' => $queryStats->count(),
+            'pendientes' => (clone $queryStats)
+                ->where('idEstado', $estadoPendiente ? $estadoPendiente->id : 0)
+                ->count(),
+            'enProceso' => (clone $queryStats)
+                ->where('idEstado', $estadoEnProceso ? $estadoEnProceso->id : 0)
+                ->count(),
+            'finalizadas' => (clone $queryStats)
+                ->where('idEstado', $estadoFinalizada ? $estadoFinalizada->id : 0)
+                ->count(),
+        ];
+
+        $pendientes = $stats['pendientes'];
+        $enProceso = $stats['enProceso'];
+        $finalizadas = $stats['finalizadas'];
+
+        $total = $pendientes + $enProceso + $finalizadas;
+        
+        $declaraciones = clone $query;
+        $declaraciones = $declaraciones->get();
+
+        return Inertia::render('Dashboard', [
+            'declaraciones' => $declaraciones,
+            'declaracionesRecientes' => (clone $query)->take(5)->get(),
+            'stats' => $stats,
+            'empresas' => $empresas,
+            'total' => $total,
+        ]);
+    }
+
+    public function index(Request $request)
+    {
+        $buscar = $request->input('buscar');
+        $buscarEstado = $request->input('buscarEstado');
+        $buscarAño = $request->input('buscarAño');
+
+        $query = Declaracion::with(['empresa', 'estado', 'plantillas'])->latest();
+
+    if ($buscar) {
+        $query->whereHas('empresa', function($q) use ($buscar) {
+            $q->where('razonSocial', 'ILIKE', "%{$buscar}%")
+                ->orWhere('rut', 'LIKE', "%{$buscar}%");
+        });
+    }
+
+    $estadoFinalizada = Estado::where('tipoEstado', 'Finalizada')->first();
+    $estadoPendiente = Estado::where('tipoEstado', 'Pendiente')->first();
+    $estadoRechazada = Estado::where('tipoEstado', 'Rechazada')->first();
+    $estadoEnProceso = Estado::where('tipoEstado', 'En Proceso')->first();
+
+    if ($buscarEstado) {
+        $query->where('idEstado', $buscarEstado);
+    } elseif ($estadoRechazada) {
+        $query->where('idEstado', '!=', $estadoRechazada->id);
+    }
+
+    if ($buscarAño) {
+        $query->whereYear('fechaFiscalInicio', $buscarAño); 
+    }
+
+    $declaracion = $query->get();
+    
+    $user = Auth::user();
+        
+    $queryStats = Declaracion::query();
+
+    if ($estadoRechazada) {
+        $queryStats->where('idEstado', '!=', $estadoRechazada->id);
+    }
+        
+    $empresas = Empresa::all();
 
         $estados = Estado::all();
 
@@ -45,16 +116,32 @@ class DeclaracionController extends Controller
             'pendientes' => (clone $queryStats)
                 ->where('idEstado', $estadoPendiente ? $estadoPendiente->id : 0)
                 ->count(),
+            'enProceso' => (clone $queryStats)
+                ->where('idEstado', $estadoEnProceso ? $estadoEnProceso->id : 0)
+                ->count(),
+            'finalizadas' => (clone $queryStats)
+                ->where('idEstado', $estadoFinalizada ? $estadoFinalizada->id : 0)
+                ->count(),
         ];
 
+        $pendientes=$stats['pendientes'];
+        $enProceso=$stats['enProceso'];
+        $finalizadas=$stats['finalizadas'];
+
+        $total=$pendientes+$enProceso+$finalizadas;
+    
         $declaracionesRecientes = (clone $queryStats)->with(['empresa', 'estado'])->latest()->take(5)->get();
 
         return Inertia::render('Declaraciones/Index', [
-            'declaraciones' => $declaracion,
-            'empresas' => $empresas,
-            'estados' => $estados,
-            'stats' => $stats,
-            'declaracionesRecientes' => $declaracionesRecientes,
+        'declaraciones' => $declaracion,
+        'filtroActual' => $buscar,
+        'filtroActualEstado' => $buscarEstado,
+        'filtroActualAño' => $buscarAño,
+        'empresas' => $empresas,
+        'estados' => $estados,
+        'stats' => $stats,
+        'total' => $total,
+        'declaracionesRecientes' => $declaracionesRecientes,
         ]);
     }
 

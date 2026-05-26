@@ -24,24 +24,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-        $user = auth()->user();
-        $query = Declaracion::with(['empresa', 'estado'])->latest();
-        
-        $estadoRechazada = Estado::where('tipoEstado', 'Rechazada')->first();
-        if ($estadoRechazada) {
-            $query->where('idEstado', '!=', $estadoRechazada->id);
-        }
-
-        if ($user->is_admin == false) {
-            $empresaIds = $user->empresas->pluck('id')->toArray();
-            $query->whereIn('idEmpresa', $empresaIds);
-        }
-        
-        return Inertia::render('Dashboard', [
-            'declaracionesRecientes' => $query->take(5)->get(),
-        ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [App\Http\Controllers\DeclaracionController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::middleware('auth')->group(function () {
