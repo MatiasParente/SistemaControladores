@@ -13,7 +13,7 @@ class PlantillaController extends Controller
         $request->validate([
             'idDeclaracion' => 'required|exists:declaracion,id',
             'tipoPlantilla' => 'required|string',
-            'archivo' => 'required|file',
+            'archivo' => 'required|file|mimes:xlsx,xls|max:2048',
         ]);
 
         if ($request->hasFile('archivo')) {
@@ -39,14 +39,13 @@ class PlantillaController extends Controller
         try {
             $plantilla = Plantilla::findOrFail($id);
 
-            // Verificar si el archivo físico realmente existe en el disco
             if (!Storage::disk('public')->exists($plantilla->direccionArchivo)) {
-                return back()->with('error', 'El archivo físico de la plantilla no se encuentra en el servidor.');
+                return back()->with('error', 'El archivo físico de la plantilla no se encuentra.');
             }
 
             return Storage::disk('public')->download($plantilla->direccionArchivo);
         } catch (\Exception $e) {
-            return back()->with('error', 'La plantilla solicitada no existe o no pudo ser descargada.');
+            return back()->with('error', 'La plantilla solicitada no pudo ser descargada.');
         }
     }
 

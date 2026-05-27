@@ -55,9 +55,19 @@ class EmpresaController extends Controller
             'rut' => 'required|unique:empresa',
             'razonSocial' => 'required',
             'direccion' => 'required',
+            'logo' => 'nullable|image|max:2048',
         ]);
 
-        Auth::user()->empresas()->create($request->all());
+        $data = $request->except('logo');
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $base64 = base64_encode(file_get_contents($file));
+            $mime = $file->getClientMimeType();
+            $data['logo'] = 'data:' . $mime . ';base64,' . $base64;
+        }
+
+        Auth::user()->empresas()->create($data);
 
         return redirect()->back()->with('message', 'Empresa creada con éxito');
     }
@@ -87,6 +97,7 @@ class EmpresaController extends Controller
             'rut' => 'required',
             'razonSocial' => 'required',
             'direccion' => 'required',
+            'logo' => 'nullable|image|max:2048',
         ]);
 
         $empresa = Empresa::find($id);
@@ -99,7 +110,16 @@ class EmpresaController extends Controller
             return redirect()->back()->with('message', 'No tienes permiso para editar esta empresa');
         }
 
-        $empresa->update($request->all());
+        $data = $request->except('logo');
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $base64 = base64_encode(file_get_contents($file));
+            $mime = $file->getClientMimeType();
+            $data['logo'] = 'data:' . $mime . ';base64,' . $base64;
+        }
+
+        $empresa->update($data);
         return redirect()->back()->with('message', 'Empresa editada con éxito');
     }
 }

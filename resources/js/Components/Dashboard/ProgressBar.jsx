@@ -1,4 +1,5 @@
 export default function ProgressBar({ stats, total }) {
+
     const pendientes = stats?.pendientes || 0;
     const enProceso = stats?.enProceso || 0;
     const finalizadas = stats?.finalizadas || 0;
@@ -12,7 +13,7 @@ export default function ProgressBar({ stats, total }) {
     return (
     <div className="w-full bg-[#0b0f19] border border-slate-800/60 rounded-2xl p-6">
         <h3 className="text-xl font-bold text-white mb-6 tracking-wide">
-            Estado Global Año Fiscal (2024)
+            Estado Global Año Fiscal
         </h3>
         
         <div className="space-y-6">

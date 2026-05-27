@@ -6,13 +6,15 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
 
     const estadoPendiente = estados.find(e => e.tipoEstado === 'Pendiente') || estados[0];
     
-    // Año por defecto
-    const [selectedYear, setSelectedYear] = useState('2026');
+    //le pedimos al sistema que nos de la fecha actual y la pasamos a string
+    const currentYear = new Date().getFullYear().toString();
+    const [selectedYear, setSelectedYear] = useState(currentYear);
+
 
     const { data, setData, post, processing, errors, reset } = useForm({
         idEmpresa: '',
-        fechaFiscalInicio: '2026-01-01',
-        fechaFiscalFin: '2026-12-31',
+        fechaFiscalInicio: `${currentYear}-01-01`,
+        fechaFiscalFin: `${currentYear}-12-31`,
         idEstado: estadoPendiente ? estadoPendiente.id : '',
         Original: null,
         IRAE: null,
@@ -129,11 +131,19 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                             onChange={(e) => handleYearChange(e.target.value)}
                             className="w-full bg-[#0F172A] text-slate-300 pl-12 pr-10 py-3.5 rounded-xl border border-gray-800 focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer text-sm"
                         >
-                            <option value="2026">2026</option>
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
+                            {/*Creamos un array con los ultimos 5 años y los mostramos en un select
+                            el array.from({length: 5} sirve para crear un array de 5 elementos, el (_, index)
+                            es para ignorar el primer elemento y trabajar con el indice, que va de 0 a 4
+                            la const year se encarga de restar el indice al año actual, para que se muestren los ultimos 5 años
+                            */}
+                            {Array.from({ length: 5 }, (_, index) => {
+                                const year = (new Date().getFullYear() - index).toString();
+                                return (
+                                    <option key={year} value={year} className="bg-[#0f172a]">
+                                        {year}
+                                    </option>
+                                );
+                            })}
                         </select>
                     </div>
                 </div>

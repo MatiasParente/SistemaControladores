@@ -45,7 +45,7 @@ class DeclaracionSeeder extends Seeder {
             'idEmpresa' => $empresas[4]->id,
             'fechaFiscalInicio' => '2025-01-01',
             'fechaFiscalFin' => '2025-12-31',
-            'idEstado' => $estados[4]->id,
+            'idEstado' => $estados[3]->id, // Use an existing state index to prevent Undefined array key 4
         ]);
     }
 }

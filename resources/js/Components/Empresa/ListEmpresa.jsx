@@ -13,10 +13,12 @@ export default function ListEmpresa({ empresas = [] }) {
     const currentEmpresas = empresas.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     // para enviar y recibir los datos actualizados
-    const { data, setData, put, processing, reset } = useForm({
+    const { data, setData, post, processing, reset } = useForm({
         razonSocial: '',
         rut: '',
-        direccion: ''
+        direccion: '',
+        logo: null,
+        _method: 'put'
     });
 
     // Activar modo edición cargando los valores de la fila seleccionada
@@ -25,7 +27,9 @@ export default function ListEmpresa({ empresas = [] }) {
         setData({
             razonSocial: empresa.razonSocial,
             rut: empresa.rut,
-            direccion: empresa.direccion
+            direccion: empresa.direccion,
+            logo: null,
+            _method: 'put'
         });
     };
 
@@ -37,8 +41,9 @@ export default function ListEmpresa({ empresas = [] }) {
 
     // Enviar los datos actualizados
     const guardarEdicion = (id) => {
-        put(route('empresas.update', id), {
-            onSuccess: () => setEditingId(null)
+        post(route('empresas.update', id), {
+            onSuccess: () => setEditingId(null),
+            forceFormData: true
         });
     };
 
@@ -90,15 +95,44 @@ export default function ListEmpresa({ empresas = [] }) {
                             return (
                                 <tr key={empresa.id} className="hover:bg-slate-800/10 transition-colors border-b border-gray-900/50">
                                     <td className="py-4 px-3">
-                                        <div className="w-12 h-12 rounded-xl border border-gray-800 bg-[#070b14] flex items-center justify-center overflow-hidden shadow-inner">
-                                            {empresa.logo ? (
-                                                <img 
-                                                    src={`/storage/${empresa.logo}`} 
-                                                    alt="Logo" 
-                                                    className="w-full h-full object-cover"
-                                                />
+                                        <div className="w-12 h-12 rounded-xl border border-gray-800 bg-[#070b14] flex items-center justify-center overflow-hidden shadow-inner relative group">
+                                            {isEditing ? (
+                                                <>
+                                                    {empresa.logo && !data.logo ? (
+                                                        <img 
+                                                            src={empresa.logo} 
+                                                            alt="Logo" 
+                                                            className="w-full h-full object-cover opacity-50"
+                                                        />
+                                                    ) : data.logo ? (
+                                                        <img 
+                                                            src={URL.createObjectURL(data.logo)} 
+                                                            alt="Logo preview" 
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <span className="text-[10px] text-slate-600 font-medium uppercase">S/L</span>
+                                                    )}
+                                                    <label className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 hover:opacity-100 cursor-pointer transition-opacity">
+                                                        <Edit className="w-4 h-4 text-white" />
+                                                        <input 
+                                                            type="file" 
+                                                            accept="image/*"
+                                                            onChange={e => setData('logo', e.target.files[0])}
+                                                            className="hidden"
+                                                        />
+                                                    </label>
+                                                </>
                                             ) : (
-                                                <span className="text-[10px] text-slate-600 font-medium uppercase">S/L</span>
+                                                empresa.logo ? (
+                                                    <img 
+                                                        src={empresa.logo} 
+                                                        alt="Logo" 
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <span className="text-[10px] text-slate-600 font-medium uppercase">S/L</span>
+                                                )
                                             )}
                                         </div>
                                     </td>

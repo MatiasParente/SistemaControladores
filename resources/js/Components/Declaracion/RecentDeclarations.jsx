@@ -8,7 +8,7 @@ export default function RecentDeclarations({ declaraciones = [] }) {
 
     // Paginación
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 6;
     const totalPages = Math.max(1, Math.ceil(declaraciones.length / itemsPerPage));
     const currentDeclaraciones = declaraciones.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -23,6 +23,12 @@ export default function RecentDeclarations({ declaraciones = [] }) {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (!file || !uploadState.declaracionId || !uploadState.tipo) return;
+        const extensionesPermitidas = /(\.xlsx|\.xls)$/i;
+        if (!extensionesPermitidas.exec(file.name)) {
+            alert('Por favor, selecciona únicamente archivos de Excel (.xlsx o .xls)');
+            e.target.value = null; // Limpia el input
+            return;
+        }
         
         const formData = new FormData();
         formData.append('idDeclaracion', uploadState.declaracionId);
@@ -85,7 +91,8 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                 type="file" 
                 ref={fileInputRef} 
                 className="hidden" 
-                onChange={handleFileChange} 
+                accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
+                onChange={handleFileChange}
             />
 
             {declaraciones.length === 0 ? (
@@ -108,7 +115,8 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                         </thead>
                         <tbody className="divide-y divide-gray-800/50">
                             {currentDeclaraciones.map((decl) => {
-                                const anioFiscal = new Date(decl.fechaFiscalInicio).getFullYear();
+                                const fechaValida = decl.fechaFiscalInicio ? new Date(decl.fechaFiscalInicio) : null;
+                                const anioFiscal = fechaValida && !isNaN(fechaValida) ? fechaValida.getUTCFullYear() : 'N/A';
                                 
                                 return (
                                     <tr key={decl.id} className="hover:bg-slate-800/10 transition-colors">
