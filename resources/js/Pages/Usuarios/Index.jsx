@@ -1,35 +1,33 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import ListEmpresa from '@/Components/Empresa/ListEmpresa';
-import FilterEmpresa from '@/Components/Empresa/FilterEmpresa';
-import CreateEmpresa from '@/Components/Empresa/CreateEmpresa';
-export default function Index({ empresas, filtroActual }) {
+import ListUser from '@/Components/Usuarios/listUsuarios';
+import FilterUser from '@/Components/Usuarios/FilterUser';
+
+export default function Index({ users, empresas, filtroActual, filtroActualEmpresa }) {
     return (
         <AuthenticatedLayout
             header={<div className="flex justify-between items-center">
                     <div>
-                        <h2 className="text-3xl font-bold text-white">Empresas</h2>
-                        <p className="text-sm text-slate-400 mt-1">Gestión de empresas, información y estado.</p>
-                    </div>
-                    <div className='w-50'>
-                        <CreateEmpresa />
+                        <h2 className="text-3xl font-bold text-white">Usuarios</h2>
+                        <p className="text-sm text-slate-400 mt-1">Gestión de usuarios.</p>
                     </div>
                 </div>}
         >
-            <Head title="Empresas" />
+            <Head title="Usuarios" />
             
             <div className="flex flex-col md:flex-row gap-6 mb-6">
                 <div className="w-full">
-                    <FilterEmpresa 
+                    <FilterUser 
+                        empresas={empresas}
                         filtroActual={filtroActual} 
+                        filtroActualEmpresa={filtroActualEmpresa} 
                     />
                 </div>
-                
             </div>
 
             <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-full">
-                    <ListEmpresa empresas={empresas} />
+                    <ListUser users={users} />
                 </div>
             </div>
         </AuthenticatedLayout>

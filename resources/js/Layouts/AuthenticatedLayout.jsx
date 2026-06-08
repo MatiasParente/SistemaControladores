@@ -6,63 +6,66 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import ErrorModal from '@/Components/ErrorModal';
 
-//header es lo de arriba de las paginas, childeren es el contendio de la pagina que si se borra queda todo en blanco
+// header es lo de arriba de las paginas, children es el contenido de la pagina que si se borra queda todo en blanco
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
 
-    //Esto sirve para los celulares, para abrir y cerrar el menu lateral
+    // Esto sirve para los celulares, para abrir y cerrar el menu lateral
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
-    <div className="min-h-screen flex bg-[#070A13] text-gray-100">
-        <ErrorModal />
+        <div className="min-h-screen flex bg-[#070A13] text-gray-100">
+            <ErrorModal />
 
-        <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-            <SidebarContent />
-        </aside>
-
-        <div className={`fixed inset-0 z-50 flex md:hidden transition-opacity duration-300 ${
-            isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}>
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
-            
-            <aside className={`relative w-64 max-w-xs flex-col flex transition-transform duration-300 ${
-                isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-            }`}>
-                <SidebarContent />
+            {/* Menú Lateral de Escritorio (Pasamos el usuario actual como prop) */}
+            <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+                <SidebarContent user={user} />
             </aside>
-        </div>
 
-        <div className="flex-1 flex flex-col md:pl-64">
-            
-            <header className="h-16 flex items-center justify-between px-6 bg-[#0B1121] border-b border-gray-800 md:hidden">
-                <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <span className="font-bold text-emerald-400">CtrlConta</span>
-                <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white">
-                    {user.name.charAt(0)}
-                </div>
-            </header>
+            {/* Menú Lateral Móvil */}
+            <div className={`fixed inset-0 z-50 flex md:hidden transition-opacity duration-300 ${
+                isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+                
+                <aside className={`relative w-64 max-w-xs flex-col flex transition-transform duration-300 ${
+                    isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+                }`}>
+                    {/* Pasamos el usuario actual como prop también aquí */}
+                    <SidebarContent user={user} />
+                </aside>
+            </div>
 
-            {header && (
-                <header className="py-6 px-8 bg-[#070A13]">
-                    {header}
+            <div className="flex-1 flex flex-col md:pl-64">
+                
+                <header className="h-16 flex items-center justify-between px-6 bg-[#0B1121] border-b border-gray-800 md:hidden">
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <span className="font-bold text-emerald-400">CtrlConta</span>
+                    <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white">
+                        {user.name.charAt(0)}
+                    </div>
                 </header>
-            )}
 
-            <main className="flex-1 p-8">
-                {children}
-            </main>
+                {header && (
+                    <header className="py-6 px-8 bg-[#070A13]">
+                        {header}
+                    </header>
+                )}
+
+                <main className="flex-1 p-8">
+                    {children}
+                </main>
+            </div>
         </div>
-    </div>
-);
-    
-    }
+    );
+}
 
-    function SidebarContent({ activeRoute }) {
+// Recibimos 'user' desde las propiedades del componente padre
+function SidebarContent({ user, activeRoute }) {
     return (
         <div className="flex flex-col h-full bg-[#0B1121] text-gray-300 p-6">
             <div className="flex items-center gap-3 mb-10">
@@ -86,7 +89,6 @@ export default function AuthenticatedLayout({ header, children }) {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
-
                     Principal
                 </Link>
 
@@ -101,7 +103,6 @@ export default function AuthenticatedLayout({ header, children }) {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
-
                     Empresas
                 </Link>
 
@@ -113,13 +114,28 @@ export default function AuthenticatedLayout({ header, children }) {
                             : 'hover:bg-gray-800/50 hover:text-white'
                     }`}
                 >
-
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-
                     Declaraciones
                 </Link>
+
+                {/* Condicional limpia usando el prop 'user' que pasamos arriba */}
+                {user?.is_admin ? (
+                    <Link 
+                        href={route('usuarios.index')} 
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                            route().current('usuarios.*') 
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                                : 'text-slate-400 hover:bg-gray-800/50 hover:text-white'
+                        }`}
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        Usuarios
+                    </Link>
+                ) : null}
             </nav>
 
             <div className="pt-6 border-t border-gray-800">
@@ -131,7 +147,6 @@ export default function AuthenticatedLayout({ header, children }) {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-
                     Perfil
                 </Link>
                 <Link 
@@ -143,11 +158,9 @@ export default function AuthenticatedLayout({ header, children }) {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
-
                     Cerrar Sesión
                 </Link>
             </div>
         </div>
     );
 }
-

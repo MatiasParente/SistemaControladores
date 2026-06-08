@@ -1,11 +1,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import StatCard from '@/Components/Declaracion/StatCard';
-import { AlertCircle } from 'lucide-react';
+import { Briefcase, AlertCircle, RefreshCw, CheckCircle2 } from 'lucide-react';
 import AttentionRequirement from '@/Components/Dashboard/AttentionRequirement';
 import ProgressBar from '@/Components/Dashboard/ProgressBar';
 
-export default function Dashboard({declaraciones = [], empresas = [], stats, total}) {
+export default function Dashboard({ atenciones, totalEmpresas, stats, total }) {
     return (
         <AuthenticatedLayout
             header={
@@ -21,10 +21,10 @@ export default function Dashboard({declaraciones = [], empresas = [], stats, tot
 
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <StatCard label="Total Empresas" value={empresas.length} />
-                    <StatCard label="Decl. Pendientes" value={stats?.pendientes || 0} icon={AlertCircle} />
-                    <StatCard label="Decl. En Proceso" value={stats?.enProceso || 0} icon={AlertCircle} />
-                    <StatCard label="Decl. Finalizadas" value={stats?.finalizadas || 0} icon={AlertCircle} />
+                    <StatCard label="Total Empresas" value={totalEmpresas || 0} icon={Briefcase} iconColor="text-blue-500" />
+<StatCard label="Decl. Pendientes" value={stats?.pendientes || 0} icon={AlertCircle} iconColor="text-orange-500" />
+<StatCard label="Decl. En Proceso" value={stats?.enProceso || 0} icon={RefreshCw} iconColor="text-yellow-500" />
+<StatCard label="Decl. Finalizadas" value={stats?.finalizadas || 0} icon={CheckCircle2} iconColor="text-green-500" />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className='mt-6'>
@@ -32,8 +32,7 @@ export default function Dashboard({declaraciones = [], empresas = [], stats, tot
                     </div>
                     <div className="mt-6">
                         <AttentionRequirement
-                            declaraciones={declaraciones}
-                            empresas={empresas}
+                            atenciones={atenciones}
                         />
                     </div>
                 </div>

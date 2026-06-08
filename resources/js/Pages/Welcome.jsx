@@ -34,14 +34,14 @@ export default function Welcome({ auth }) {
                                     href={route('login')}
                                     className="w-full inline-flex justify-center items-center px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-blue-900/20"
                                 >
-                                    Log in
+                                    Ingresar
                                 </Link>
                                 
                                 <Link
                                     href={route('register')}
                                     className="w-full inline-flex justify-center items-center px-4 py-3 bg-transparent hover:bg-slate-800/50 text-slate-300 hover:text-white border border-slate-700 font-semibold rounded-xl transition-all"
                                 >
-                                    Register
+                                    Registrarse
                                 </Link>
                             </>
                         )}

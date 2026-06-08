@@ -11,6 +11,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        is_admin: false,
     });
 
     const submit = (e) => {
@@ -99,6 +100,16 @@ export default function Register() {
                     <InputError
                         message={errors.password_confirmation}
                         className="mt-2"
+                    />
+                </div>
+                <div className="mt-4">
+                    <InputLabel htmlFor="is_admin" value="¿Es administrador?" />
+                    <input
+                        type="checkbox"
+                        name="is_admin"
+                        id="is_admin"
+                        checked={data.is_admin}
+                        onChange={(e) => setData('is_admin', e.target.checked)}
                     />
                 </div>
 

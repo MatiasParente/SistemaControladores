@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/declaraciones', [DeclaracionController::class, 'store'])->name('declaraciones.store');
     Route::put('/declaraciones/{id}', [DeclaracionController::class, 'update'])->name('declaraciones.update');
     Route::delete('/declaraciones/{id}', [DeclaracionController::class, 'destroy'])->name('declaraciones.destroy');
+    Route::post('/declaraciones/{id}/restaurar', [DeclaracionController::class, 'restaurar'])->name('declaraciones.restaurar');
 
     Route::get('/estados', [EstadoController::class, 'index'])->name('estados.index');
     Route::post('/estados', [EstadoController::class, 'store'])->name('estados.store');

@@ -1,32 +1,26 @@
-import { Trash2, Calendar, Download, X } from 'lucide-react';
-import { router } from '@inertiajs/react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react'; 
+import { Link, router } from '@inertiajs/react';
+import { Calendar, Download, X, Trash2, RotateCcw } from 'lucide-react';
 
-export default function RecentDeclarations({ declaraciones = [] }) {
+export default function RecentDeclarations({ declaraciones }) {
     const fileInputRef = useRef(null);
     const [uploadState, setUploadState] = useState({ declaracionId: null, tipo: null });
-
-    // Paginación
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
-    const totalPages = Math.max(1, Math.ceil(declaraciones.length / itemsPerPage));
-    const currentDeclaraciones = declaraciones.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const triggerUpload = (declId, tipo) => {
         setUploadState({ declaracionId: declId, tipo });
         if (fileInputRef.current) {
-            fileInputRef.current.value = null; // reset
+            fileInputRef.current.value = null;
             fileInputRef.current.click();
         }
     };
 
-    const handleFileChange = (e) => {
+    const subirArchivo = (e) => {
         const file = e.target.files[0];
         if (!file || !uploadState.declaracionId || !uploadState.tipo) return;
         const extensionesPermitidas = /(\.xlsx|\.xls)$/i;
         if (!extensionesPermitidas.exec(file.name)) {
             alert('Por favor, selecciona únicamente archivos de Excel (.xlsx o .xls)');
-            e.target.value = null; // Limpia el input
+            e.target.value = null;
             return;
         }
         
@@ -44,7 +38,7 @@ export default function RecentDeclarations({ declaraciones = [] }) {
         });
     };
 
-    const handleDeletePlantilla = (idPlantilla, tipo) => {
+    const eliminarPlantilla = (idPlantilla, tipo) => {
         if (confirm(`¿Estás seguro de que deseas eliminar el archivo de ${tipo}?`)) {
             router.delete(route('plantillas.destroy', idPlantilla), {
                 preserveScroll: true,
@@ -53,23 +47,31 @@ export default function RecentDeclarations({ declaraciones = [] }) {
         }
     };
     
-    const getStatusColor = (statusName) => {
+    const colorEstado = (statusName) => {
         if (statusName === 'Pendiente') {
             return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
         }
         if (statusName === 'En Proceso') {
             return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
         }
-        if (statusName === 'Rechazada') {
+        if (statusName === 'Eliminada') {
             return 'bg-red-500/10 text-red-500 border-red-500/20';
         }
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
     };
 
-    const handleDelete = (id) => {
-        if (confirm('¿Estás seguro de que deseas eliminar esta declaración fiscal? Se borrarán también todos sus archivos asociados.')) {
+    const eliminar = (id) => {
+        if (confirm('¿Estás seguro de que deseas eliminar esta declaración fiscal? Si se encuentra en estado "Eliminado" se borrara permanentemente la declaracion, en otro caso solo se cambiara el estado.')) {
             router.delete(route('declaraciones.destroy', id), {
                 onSuccess: () => alert('Declaración eliminada con éxito.')
+            });
+        }
+    };
+
+    const restaurarDeclaracion = (id) => {
+        if (confirm('¿Estás seguro de que deseas restaurar esta declaración fiscal?')) {
+            router.post(route('declaraciones.restaurar', id), {
+                onSuccess: () => alert('Declaración restaurada con éxito.')
             });
         }
     };
@@ -92,10 +94,10 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                 ref={fileInputRef} 
                 className="hidden" 
                 accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
-                onChange={handleFileChange}
+                onChange={subirArchivo}
             />
 
-            {declaraciones.length === 0 ? (
+            {(!declaraciones || !declaraciones.data || declaraciones.data.length === 0) ? (
                 <div className="flex flex-col items-center justify-center py-12 text-slate-500 border border-dashed border-gray-800 rounded-2xl">
                     <Calendar className="w-12 h-12 mb-3 text-slate-600" />
                     <p className="text-sm">No se encontraron declaraciones fiscales registradas.</p>
@@ -108,13 +110,14 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                             <tr className="border-b border-gray-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
                                 <th className="py-4 px-3">Empresa</th>
                                 <th className="py-4 px-3">Año Fiscal</th>
+                                <th className="py-4 px-3">Usuario</th>
                                 <th className="py-4 px-3">Estado</th>
                                 <th className="py-4 px-3">Planillas</th>
                                 <th className="py-4 px-3 text-right"> </th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-800/50">
-                            {currentDeclaraciones.map((decl) => {
+                            {declaraciones.data.map((decl) => {
                                 const fechaValida = decl.fechaFiscalInicio ? new Date(decl.fechaFiscalInicio) : null;
                                 const anioFiscal = fechaValida && !isNaN(fechaValida) ? fechaValida.getUTCFullYear() : 'N/A';
                                 
@@ -132,7 +135,7 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                                             {anioFiscal}
                                         </td>
                                         <td className="py-4 px-3">
-                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(decl.estado?.tipoEstado)}`}>
+                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${colorEstado(decl.estado?.tipoEstado)}`}>
                                                 {decl.estado?.tipoEstado || 'Pendiente'}
                                             </span>
                                         </td>
@@ -159,7 +162,7 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                                                                     {labelMap[tipo]}
                                                                 </a>
                                                                 <button
-                                                                    onClick={() => handleDeletePlantilla(pl.id, tipo)}
+                                                                    onClick={() => eliminarPlantilla(pl.id, tipo)}
                                                                     className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                                                                     title={`Eliminar planilla ${tipo}`}
                                                                 >
@@ -181,9 +184,20 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                                                 })}
                                             </div>
                                         </td>
+                                        {decl.estado?.tipoEstado === 'Eliminado' && (
+                                            <td className="py-4 px-3 text-right">
+                                                <button
+                                                    onClick={() => restaurarDeclaracion(decl.id)}
+                                                    className="p-2 hover:bg-green-500/10 hover:text-green-400 text-slate-400 rounded-lg transition-colors inline-flex items-center"
+                                                    title="Restaurar declaración"
+                                                >
+                                                    <RotateCcw className="w-4.5 h-4.5" />
+                                                </button>
+                                            </td>
+                                        )}
                                         <td className="py-4 px-3 text-right">
                                             <button 
-                                                onClick={() => handleDelete(decl.id)}
+                                                onClick={() => eliminar(decl.id)}
                                                 className="p-2 hover:bg-red-500/10 hover:text-red-400 text-slate-400 rounded-lg transition-colors inline-flex items-center"
                                                 title="Eliminar declaración"
                                             >
@@ -198,25 +212,61 @@ export default function RecentDeclarations({ declaraciones = [] }) {
                 </div>
             )}
             
-            {declaraciones.length > 0 && totalPages > 1 && (
-                <div className="flex items-center justify-between mt-6 px-2">
-                    <button 
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        disabled={currentPage === 1}
-                        className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Anterior
-                    </button>
-                    <span className="text-sm text-slate-400">
-                        Página <span className="text-slate-200 font-semibold">{currentPage}</span> de <span className="text-slate-200 font-semibold">{totalPages}</span>
-                    </span>
-                    <button 
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        disabled={currentPage === totalPages}
-                        className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Siguiente
-                    </button>
+            {declaraciones?.data?.length > 0 && (
+                <div className="flex items-center justify-between mt-6 px-2 w-full">
+                    <div>
+                        {(() => {
+                            const firstLink = declaraciones?.links?.[0];
+                            if (!firstLink) return null;
+                            const label = 'Anterior';
+                            
+                            if (!firstLink.url) {
+                                return (
+                                    <span 
+                                        className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800/20 text-slate-600 cursor-not-allowed border border-gray-800/40 select-none"
+                                        dangerouslySetInnerHTML={{ __html: label }} 
+                                    />
+                                );
+                            }
+
+                            return (
+                                <Link
+                                    href={firstLink.url}
+                                    className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800/60 text-slate-300 hover:bg-slate-700 hover:text-white border border-gray-700/30 transition-colors shadow-sm"
+                                    dangerouslySetInnerHTML={{ __html: label }}
+                                />
+                            );
+                        })()}
+                    </div>
+                    
+                    <div className="text-sm font-medium text-slate-400 select-none">
+                        Página <span className="font-bold text-white mx-0.5">{declaraciones?.current_page}</span> de <span className="font-bold text-white mx-0.5">{declaraciones?.last_page}</span>
+                    </div>
+                    
+                    <div>
+                        {(() => {
+                            const lastLink = declaraciones?.links?.[declaraciones.links.length - 1];
+                            if (!lastLink) return null;
+                            const label = 'Siguiente';
+
+                            if (!lastLink.url) {
+                                return (
+                                    <span 
+                                        className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800/20 text-slate-600 cursor-not-allowed border border-gray-800/40 select-none"
+                                        dangerouslySetInnerHTML={{ __html: label }} 
+                                    />
+                                );
+                            }
+
+                            return (
+                                <Link
+                                    href={lastLink.url}
+                                    className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800/60 text-slate-300 hover:bg-slate-700 hover:text-white border border-gray-700/30 transition-colors shadow-sm"
+                                    dangerouslySetInnerHTML={{ __html: label }}
+                                />
+                            );
+                        })()}
+                    </div>
                 </div>
             )}
         </div>

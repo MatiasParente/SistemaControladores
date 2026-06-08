@@ -8,7 +8,6 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
     
     //le pedimos al sistema que nos de la fecha actual y la pasamos a string
     const currentYear = new Date().getFullYear().toString();
-    const [selectedYear, setSelectedYear] = useState(currentYear);
 
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -43,16 +42,6 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
             }
         }
     }, [data.Original, data.IRAE, data.Patrimonio, data.Balance, estados]);
-
-    //  calculams fecha inicio y final del año fiscal
-    const handleYearChange = (year) => {
-        setSelectedYear(year);
-        setData(prev => ({
-            ...prev,
-            fechaFiscalInicio: `${year}-01-01`,
-            fechaFiscalFin: `${year}-12-31`
-        }));
-    };
 
     const handleFileChange = (tipo, file) => {
         setData(tipo, file);
@@ -124,18 +113,16 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                 {/* Año Fiscal */}
                 <div className="flex flex-col gap-2">
                     <label className="text-slate-400 text-sm font-medium">Año Fiscal</label>
-                    <div className="relative">
-                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
-                        <select 
-                            value={selectedYear}
-                            onChange={(e) => handleYearChange(e.target.value)}
-                            className="w-full bg-[#0F172A] text-slate-300 pl-12 pr-10 py-3.5 rounded-xl border border-gray-800 focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer text-sm"
-                        >
+                    <div className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border border-gray-800 bg-[#0F172A] text-slate-200 text-sm font-semibold shadow-sm select-none">
+                        <Calendar className="w-5 h-5 text-slate-400 opacity-70" />
+                        <span>{currentYear}</span>
+                    </div>
+                </div>
                             {/*Creamos un array con los ultimos 5 años y los mostramos en un select
                             el array.from({length: 5} sirve para crear un array de 5 elementos, el (_, index)
                             es para ignorar el primer elemento y trabajar con el indice, que va de 0 a 4
                             la const year se encarga de restar el indice al año actual, para que se muestren los ultimos 5 años
-                            */}
+                            
                             {Array.from({ length: 5 }, (_, index) => {
                                 const year = (new Date().getFullYear() - index).toString();
                                 return (
@@ -143,10 +130,7 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                                         {year}
                                     </option>
                                 );
-                            })}
-                        </select>
-                    </div>
-                </div>
+                            })}*/}
 
                 <div className="flex flex-col gap-2">
                     <label className="text-slate-400 text-sm font-medium">Estado</label>

@@ -1,20 +1,31 @@
 import { router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import { useRef } from 'react';
 
 export default function FilterDeclaracion({ filtroActual, filtroActualEstado, filtroActualAño }) {
     const [busqueda, setBusqueda] = useState(filtroActual || '');
     const [buscarEstado, setBuscarEstado] = useState(filtroActualEstado || '');
     const [buscarAño, setBuscarAño] = useState(filtroActualAño || '');
+    const firstRender = useRef(true);
 
-    // Generar el año actual y los 4 anteriores automáticamente
+    //generar el año actual y los 4 anteriores automáticamente
     const añoActual = new Date().getFullYear();
     const ultimosAnios = Array.from({ length: 5 }, (_, i) => añoActual - i);
 
     useEffect(() => {
-        router.get(route('declaraciones.index'), 
-            { buscar: busqueda, buscarEstado: buscarEstado, buscarAño: buscarAño }, 
-            { preserveState: true, replace: true }
-        );
+        if (firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            router.get(route('declaraciones.index'), 
+                { buscar: busqueda, buscarEstado: buscarEstado, buscarAño: buscarAño }, 
+                { preserveState: true, replace: true }
+            );
+        }, 300);
+
+        return () => clearTimeout(timer);
     }, [busqueda, buscarEstado, buscarAño]);
 
     return (
@@ -42,6 +53,7 @@ export default function FilterDeclaracion({ filtroActual, filtroActualEstado, fi
                     <option value="1" className="bg-[#0B1121]">Pendiente</option>
                     <option value="2" className="bg-[#0B1121]">En Proceso</option>
                     <option value="3" className="bg-[#0B1121]">Finalizado</option>
+                    <option value="4" className="bg-[#0B1121]">Eliminado</option>
                 </select>
             </div>
 

@@ -1,4 +1,4 @@
-export default function StatCard({ label, value, icon: Icon }) {
+export default function StatCard({ label, value, icon: Icon, iconColor }) {
     return (
         <div className="bg-[#0B1121] p-6 rounded-3xl border border-gray-800 shadow-xl flex flex-col justify-between">
             <div className="flex justify-between items-start">
@@ -8,7 +8,7 @@ export default function StatCard({ label, value, icon: Icon }) {
                 </div>
                 {Icon && (
                     <div className="p-3 bg-gray-800/40 rounded-2xl border border-gray-800">
-                        <Icon className="w-6 h-6 text-slate-400" />
+                        <Icon className={`w-6 h-6 ${iconColor}`} />
                     </div>
                 )}
             </div>

@@ -17,7 +17,17 @@ class PlantillaController extends Controller
         ]);
 
         if ($request->hasFile('archivo')) {
-            $ruta = $request->file('archivo')->store('plantillas', 'public');
+            $file = $request->file('archivo');
+
+            //limpiamos el nombre del archivo
+            $nombreOriginal = str_replace(' ', '_', $file->getClientOriginalName());
+
+            //creamos el nombre del archivo combinando el tiempo actual con el nombre original
+            $nombreArchivo = time() . '_' . $nombreOriginal;
+
+            //Guardamos el archivo en la carpeta plantillas, dentro del disco public
+            $ruta = $file->storeAs('plantillas', $nombreArchivo, 'public');
+
             $plantilla = Plantilla::create([
                 'idDeclaracion' => $request->idDeclaracion,
                 'tipoPlantilla' => $request->tipoPlantilla,
