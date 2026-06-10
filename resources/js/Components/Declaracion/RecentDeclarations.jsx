@@ -54,7 +54,7 @@ export default function RecentDeclarations({ declaraciones }) {
         if (statusName === 'En Proceso') {
             return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
         }
-        if (statusName === 'Eliminada') {
+        if (statusName === 'Eliminado') {
             return 'bg-red-500/10 text-red-500 border-red-500/20';
         }
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';

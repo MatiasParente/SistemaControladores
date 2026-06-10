@@ -6,7 +6,7 @@ import RecentDeclarations from '@/Components/Declaracion/RecentDeclarations';
 import FilterDeclaracion from '@/Components/Declaracion/FilterDeclaracion';
 import { FileText, TrendingUp, AlertCircle } from 'lucide-react';
 
-export default function Index({ declaraciones = [], empresas = [], estados = [], stats, filtroActual, filtroActualEstado, filtroActualAño}) {
+export default function Index({ declaraciones = [], empresas = [], estados = [], stats, filtroActual, filtroActualEstado, filtroActualAño, aniosDisponibles = []}) {
 
     return (
         <AuthenticatedLayout
@@ -30,10 +30,7 @@ export default function Index({ declaraciones = [], empresas = [], estados = [],
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     <div className="lg:col-span-2 space-y-6">
-                        <FilterDeclaracion 
-                        filtroActual={filtroActual} 
-                        filtroActualEstado={filtroActualEstado} 
-                        filtroActualAño={filtroActualAño} />
+                        <FilterDeclaracion filtroActual={filtroActual} filtroActualEstado={filtroActualEstado} filtroActualAño={filtroActualAño} aniosDisponibles={aniosDisponibles} />
                         <RecentDeclarations declaraciones={declaraciones} />
                     </div>
                     <div className="w-full">

@@ -146,6 +146,13 @@ class DeclaracionController extends Controller
             'finalizadas' => (clone $queryStats)->where('idEstado', $estadoFinalizada ? $estadoFinalizada->id : 0)->count(),
         ];
 
+        $aniosDisponibles = (clone $queryStats)
+        ->selectRaw('EXTRACT(YEAR FROM "fechaFiscalInicio") as anio') //extramos solo el año
+        ->distinct() // solo los que son distintos (asi no repetimos valores)
+        ->orderBy('anio', 'desc') //ordenamos de mayor a menor
+        ->pluck('anio') //lo pasamos a array
+        ->filter(); //quitamos nulls o falses
+
         $total = $stats['pendientes'] + $stats['enProceso'] + $stats['finalizadas'];
         $empresas = Empresa::latest()->get();
         $estados = Estado::all();
@@ -159,6 +166,7 @@ class DeclaracionController extends Controller
             'estados' => $estados,
             'stats' => $stats,
             'total' => $total,
+            'aniosDisponibles' => array_values($aniosDisponibles->toArray()),
         ]);
     }
 

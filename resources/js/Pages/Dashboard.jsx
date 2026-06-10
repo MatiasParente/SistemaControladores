@@ -22,9 +22,9 @@ export default function Dashboard({ atenciones, totalEmpresas, stats, total }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <StatCard label="Total Empresas" value={totalEmpresas || 0} icon={Briefcase} iconColor="text-blue-500" />
-<StatCard label="Decl. Pendientes" value={stats?.pendientes || 0} icon={AlertCircle} iconColor="text-orange-500" />
-<StatCard label="Decl. En Proceso" value={stats?.enProceso || 0} icon={RefreshCw} iconColor="text-yellow-500" />
-<StatCard label="Decl. Finalizadas" value={stats?.finalizadas || 0} icon={CheckCircle2} iconColor="text-green-500" />
+                    <StatCard label="Decl. Pendientes" value={stats?.pendientes || 0} icon={AlertCircle} iconColor="text-orange-500" />
+                    <StatCard label="Decl. En Proceso" value={stats?.enProceso || 0} icon={RefreshCw} iconColor="text-yellow-500" />
+                    <StatCard label="Decl. Finalizadas" value={stats?.finalizadas || 0} icon={CheckCircle2} iconColor="text-green-500" />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className='mt-6'>

@@ -2,15 +2,15 @@ import { router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { useRef } from 'react';
 
-export default function FilterDeclaracion({ filtroActual, filtroActualEstado, filtroActualAño }) {
+export default function FilterDeclaracion({ filtroActual, filtroActualEstado, filtroActualAño, aniosDisponibles = [] }) {
     const [busqueda, setBusqueda] = useState(filtroActual || '');
     const [buscarEstado, setBuscarEstado] = useState(filtroActualEstado || '');
     const [buscarAño, setBuscarAño] = useState(filtroActualAño || '');
     const firstRender = useRef(true);
 
     //generar el año actual y los 4 anteriores automáticamente
-    const añoActual = new Date().getFullYear();
-    const ultimosAnios = Array.from({ length: 5 }, (_, i) => añoActual - i);
+    //const añoActual = new Date().getFullYear();
+    //const ultimosAnios = Array.from({ length: 5 }, (_, i) => añoActual - i);
 
     useEffect(() => {
         if (firstRender.current) {
@@ -65,7 +65,7 @@ export default function FilterDeclaracion({ filtroActual, filtroActualEstado, fi
                     className="w-full rounded-xl border border-gray-800 bg-[#0B1121] px-4 py-2.5 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer transition-colors"
                 >
                     <option value="" className="bg-[#0B1121]">Todos</option>
-                    {ultimosAnios.map((anio) => (
+                    {aniosDisponibles.map((anio) => (
                         <option key={anio} value={anio} className="bg-[#0B1121]">
                             {anio}
                         </option>
