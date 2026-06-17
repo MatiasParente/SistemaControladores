@@ -182,7 +182,7 @@ export default function RecentDeclarations({ declaraciones }) {
                                                         <button 
                                                             key={tipo}
                                                             onClick={() => triggerUpload(decl.id, tipo)}
-                                                            className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800/40 hover:bg-gray-700/60 text-slate-500 hover:text-slate-700 dark:text-slate-300 border border-gray-200 dark:border-gray-800/80 rounded text-[11px] transition-colors cursor-pointer"
+                                                            className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800/40 hover:bg-gray-200 text-slate-500 hover:text-slate-700 dark:text-slate-300 border border-gray-200 dark:border-gray-800/80 rounded text-[11px] cursor-pointer"
                                                             title={`Subir ${tipo}`}
                                                         >
                                                             {labelMap[tipo]}

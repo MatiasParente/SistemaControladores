@@ -226,7 +226,7 @@ export default function ListEmpresa({ empresas }) {
                                                 <div className="group relative flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 cursor-help hover:bg-orange-500/20 transition-colors">
                                                     <Clock className="w-4 h-4" />
                                                     <span className="font-bold text-sm">{empresa.en_pendiente_count}</span>
-                                                    <div className="absolute top-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                    <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                         <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-1.5 px-3 shadow-xl border border-slate-700">Pendientes</div>
                                                         <div className="hidden md:block w-2 h-2 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                         <div className="md:hidden w-2 h-2 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -238,7 +238,7 @@ export default function ListEmpresa({ empresas }) {
                                                 <div className="group relative flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 cursor-help hover:bg-blue-500/20 transition-colors">
                                                     <RefreshCw className="w-4 h-4" />
                                                     <span className="font-bold text-sm">{empresa.en_proceso_count}</span>
-                                                    <div className="absolute top-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                    <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                         <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-1.5 px-3 shadow-xl border border-slate-700">En Proceso</div>
                                                         <div className="hidden md:block w-2 h-2 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                         <div className="md:hidden w-2 h-2 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -250,7 +250,7 @@ export default function ListEmpresa({ empresas }) {
                                                 <div className="group relative flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 cursor-help hover:bg-emerald-500/20 transition-colors">
                                                     <CheckCircle2 className="w-4 h-4" />
                                                     <span className="font-bold text-sm">{empresa.finalizadas_count}</span>
-                                                    <div className="absolute top-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                    <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                         <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-1.5 px-3 shadow-xl border border-slate-700">Finalizadas</div>
                                                         <div className="hidden md:block w-2 h-2 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                         <div className="md:hidden w-2 h-2 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -262,7 +262,7 @@ export default function ListEmpresa({ empresas }) {
                                                 <div className="group relative flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 cursor-help hover:bg-rose-500/20 transition-colors">
                                                     <XCircle className="w-4 h-4" />
                                                     <span className="font-bold text-sm">{empresa.rechazadas_count}</span>
-                                                    <div className="absolute top-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                    <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                         <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-1.5 px-3 shadow-xl border border-slate-700">Rechazadas</div>
                                                         <div className="hidden md:block w-2 h-2 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                         <div className="md:hidden w-2 h-2 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -308,7 +308,7 @@ export default function ListEmpresa({ empresas }) {
                                                     {/*Editar */}
                                                     <button 
                                                         onClick={() => iniciarEdicion(empresa)}
-                                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800/50 md:bg-transparent rounded-lg p-2 md:p-1 text-slate-400 hover:text-blue-400 hover:bg-slate-100 dark:bg-slate-800 transition-colors"
+                                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800/50 md:bg-transparent rounded-lg p-2 md:p-1 text-slate-400 hover:text-blue-400 hover:bg-slate-100 dark:bg-slate-800"
                                                         title="Editar Empresa"
                                                     >
                                                         <Edit className="w-4 h-4" />
@@ -317,7 +317,7 @@ export default function ListEmpresa({ empresas }) {
 
                                                     <button 
                                                         onClick={() => eliminarEmpresa(empresa.id)}
-                                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-rose-500/10 md:bg-transparent rounded-lg p-2 md:p-1 text-rose-500 md:text-slate-400 hover:text-rose-500 hover:bg-rose-500/20 md:hover:bg-transparent transition-colors"
+                                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800/50 md:bg-transparent rounded-lg p-2 md:p-1 text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:bg-slate-800"
                                                         title="Eliminar Empresa"
                                                     >
                                                         <Trash2 className="w-5 h-5 md:w-4 md:h-4" />

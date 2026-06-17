@@ -29,7 +29,7 @@ export default function FilterDeclaracion({ filtroActual, filtroActualEstado, fi
     }, [busqueda, buscarEstado, buscarAño]);
 
     return (
-        <div className="bg-white dark:bg-[#0B1121] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-xl flex flex-col md:flex-row gap-4 items-end w-full">
+        <div className="bg-gray-50 dark:bg-[#0B1121] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-xl flex flex-col md:flex-row gap-4 items-end w-full">
             
             <div className="w-full flex flex-col gap-2 flex-1">
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Buscar por empresa</label>

@@ -6,7 +6,7 @@ export default function AttentionRequirement({ atenciones }) {
     return (
         <div className="bg-gray-50 dark:bg-[#0b0f19] border border-gray-200 dark:border-gray-800/60 rounded-2xl p-6 max-w-xl shadow-xl">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                Planillas Faltantes (Atención Requerida)
+                Planillas Faltantes
             </h2>
             
             <div className="space-y-4">
@@ -18,7 +18,7 @@ export default function AttentionRequirement({ atenciones }) {
                     return (
                         <div 
                             key={declaracion.id} 
-                            className="bg-gray-100 dark:bg-[#131926] border border-gray-200 dark:border-slate-800 rounded-xl p-5 flex items-center justify-between gap-4 hover:border-slate-700"
+                            className="bg-gray-100 dark:bg-[#131926] rounded-xl p-5 flex items-center justify-between gap-4 hover:border-slate-700"
                         >
                             <div className="flex flex-col gap-1">
                                 <h3 className="text-base font-bold text-gray-900 dark:text-slate-200 tracking-wide">

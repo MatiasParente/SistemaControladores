@@ -36,7 +36,7 @@ useEffect(() => {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between bg-gray-100 dark:bg-[#070b14] border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                className="w-full flex items-center justify-between bg-white dark:bg-[#070b14] border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
             >
                 <span className="truncate text-slate-700 dark:text-slate-300">
                     {selectedIds.length === 0 

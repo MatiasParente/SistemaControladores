@@ -78,9 +78,9 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#0B1121] text-slate-800 dark:text-slate-200 p-8 rounded-3xl border border-gray-200 dark:border-gray-800 w-full max-w-md shadow-2xl">
+        <div className="bg-gray-50 dark:bg-[#0B1121] text-slate-800 dark:text-slate-200 p-8 rounded-3xl border border-gray-200 dark:border-gray-800 w-full max-w-md shadow-2xl">
             {/* Título */}
-            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                 <span className="text-emerald-400 text-3xl font-light">+</span> Nueva Declaración
             </h3>
 
