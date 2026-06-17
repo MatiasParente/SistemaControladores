@@ -29,7 +29,7 @@ export default function FilterDeclaracion({ filtroActual, filtroActualEstado, fi
     }, [busqueda, buscarEstado, buscarAño]);
 
     return (
-        <div className="bg-[#0B1121] p-6 rounded-3xl border border-gray-800 shadow-xl flex flex-col md:flex-row gap-4 items-end w-full">
+        <div className="bg-white dark:bg-[#0B1121] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-xl flex flex-col md:flex-row gap-4 items-end w-full">
             
             <div className="w-full flex flex-col gap-2 flex-1">
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Buscar por empresa</label>
@@ -38,7 +38,7 @@ export default function FilterDeclaracion({ filtroActual, filtroActualEstado, fi
                     placeholder="Escribe la Razón Social o RUT"
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
-                    className="w-full rounded-xl border border-gray-800 bg-[#0B1121] px-4 py-2.5 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 placeholder-slate-600 transition-colors"
+                    className="w-full rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0B1121] px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 placeholder-slate-600"
                 />
             </div>
 
@@ -47,13 +47,13 @@ export default function FilterDeclaracion({ filtroActual, filtroActualEstado, fi
                 <select
                     value={buscarEstado}
                     onChange={(e) => setBuscarEstado(e.target.value)}
-                    className="w-full rounded-xl border border-gray-800 bg-[#0B1121] px-4 py-2.5 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer transition-colors"
+                    className="w-full rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0B1121] px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
                 >
-                    <option value="" className="bg-[#0B1121]">Todos</option>
-                    <option value="1" className="bg-[#0B1121]">Pendiente</option>
-                    <option value="2" className="bg-[#0B1121]">En Proceso</option>
-                    <option value="3" className="bg-[#0B1121]">Finalizado</option>
-                    <option value="4" className="bg-[#0B1121]">Eliminado</option>
+                    <option value="" className="bg-white dark:bg-[#0B1121]">Todos</option>
+                    <option value="1" className="bg-white dark:bg-[#0B1121]">Pendiente</option>
+                    <option value="2" className="bg-white dark:bg-[#0B1121]">En Proceso</option>
+                    <option value="3" className="bg-white dark:bg-[#0B1121]">Finalizado</option>
+                    <option value="4" className="bg-white dark:bg-[#0B1121]">Eliminado</option>
                 </select>
             </div>
 
@@ -62,11 +62,11 @@ export default function FilterDeclaracion({ filtroActual, filtroActualEstado, fi
                 <select
                     value={buscarAño}
                     onChange={(e) => setBuscarAño(e.target.value)}
-                    className="w-full rounded-xl border border-gray-800 bg-[#0B1121] px-4 py-2.5 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer transition-colors"
+                    className="w-full rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0B1121] px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
                 >
-                    <option value="" className="bg-[#0B1121]">Todos</option>
+                    <option value="" className="bg-white dark:bg-[#0B1121]">Todos</option>
                     {aniosDisponibles.map((anio) => (
-                        <option key={anio} value={anio} className="bg-[#0B1121]">
+                        <option key={anio} value={anio} className="bg-white dark:bg-[#0B1121]">
                             {anio}
                         </option>
                     ))}

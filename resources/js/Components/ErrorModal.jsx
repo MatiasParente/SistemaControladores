@@ -38,7 +38,7 @@ export default function ErrorModal() {
                     </div>
                     
                     <h3 className="text-xl font-bold text-white mb-2">¡Ha ocurrido un error!</h3>
-                    <p className="text-slate-300 text-sm mb-6">
+                    <p className="text-slate-700 dark:text-slate-300 text-sm mb-6">
                         {errorMessage}
                     </p>
                     

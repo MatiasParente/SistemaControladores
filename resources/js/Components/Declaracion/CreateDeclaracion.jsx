@@ -78,7 +78,7 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
     };
 
     return (
-        <div className="bg-[#0B1121] text-slate-200 p-8 rounded-3xl border border-gray-800 w-full max-w-md shadow-2xl">
+        <div className="bg-white dark:bg-[#0B1121] text-slate-800 dark:text-slate-200 p-8 rounded-3xl border border-gray-200 dark:border-gray-800 w-full max-w-md shadow-2xl">
             {/* Título */}
             <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <span className="text-emerald-400 text-3xl font-light">+</span> Nueva Declaración
@@ -93,11 +93,11 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                         <select 
                             value={data.idEmpresa}
                             onChange={(e) => setData('idEmpresa', e.target.value)}
-                            className={`w-full bg-[#0F172A] text-slate-300 pl-12 pr-10 py-3.5 rounded-xl border ${errors.idEmpresa ? 'border-red-500' : 'border-gray-800'} focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer text-sm`}
+                            className={`w-full bg-white dark:bg-[#0F172A] text-slate-700 dark:text-slate-300 pl-12 pr-10 py-3.5 rounded-xl border ${errors.idEmpresa ? 'border-red-500' : 'border-gray-200 dark:border-gray-800'} focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer text-sm`}
                         >
                             <option value="" disabled>Selecciona una empresa</option>
                             {empresas.map((emp) => (
-                                <option key={emp.id} value={emp.id} className="bg-[#0f172a]">
+                                <option key={emp.id} value={emp.id} className="bg-white dark:bg-[#0f172a]">
                                     {emp.razonSocial} ({emp.rut})
                                 </option>
                             ))}
@@ -113,7 +113,7 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                 {/* Año Fiscal */}
                 <div className="flex flex-col gap-2">
                     <label className="text-slate-400 text-sm font-medium">Año Fiscal</label>
-                    <div className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border border-gray-800 bg-[#0F172A] text-slate-200 text-sm font-semibold shadow-sm select-none">
+                    <div className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0F172A] text-slate-800 dark:text-slate-200 text-sm font-semibold shadow-sm select-none">
                         <Calendar className="w-5 h-5 text-slate-400 opacity-70" />
                         <span>{currentYear}</span>
                     </div>
@@ -134,7 +134,7 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
 
                 <div className="flex flex-col gap-2">
                     <label className="text-slate-400 text-sm font-medium">Estado</label>
-                    <div className={`w-full flex items-center gap-3 pl-4 pr-10 py-3.5 rounded-xl border text-sm font-semibold transition-colors ${getStatusColor(estadoName)}`}>
+                    <div className={`w-full flex items-center gap-3 pl-4 pr-10 py-3.5 rounded-xl border text-sm font-semibold ${getStatusColor(estadoName)}`}>
                         <Building2 className="w-5 h-5 opacity-70" />
                         {estadoName}
                     </div>
@@ -148,13 +148,13 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                         {plantillasDisponibles.map((plantilla) => (
                             <label 
                                 key={plantilla.key} 
-                                className={`flex items-center justify-between p-3.5 bg-[#0F172A] rounded-xl border ${data[plantilla.key] ? 'border-emerald-500/40 bg-emerald-500/5' : 'border-gray-800 hover:border-gray-700'} cursor-pointer transition-all duration-200`}
+                                className={`flex items-center justify-between p-3.5 bg-white dark:bg-[#0F172A] rounded-xl border ${data[plantilla.key] ? 'border-emerald-500/40 bg-emerald-500/5' : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:border-gray-700'} cursor-pointer`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${data[plantilla.key] ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-800 text-slate-400'}`}>
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${data[plantilla.key] ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-100 dark:bg-gray-800 text-slate-400'}`}>
                                         <FileSpreadsheet className="w-4 h-4" />
                                     </div>
-                                    <span className="text-slate-200 text-sm font-medium">{plantilla.label}</span>
+                                    <span className="text-slate-800 dark:text-slate-200 text-sm font-medium">{plantilla.label}</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
                                     {data[plantilla.key] ? (
@@ -162,7 +162,7 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                                             <Check className="w-3.5 h-3.5" /> Cargado
                                         </span>
                                     ) : (
-                                        <span className="text-slate-500 text-xs hover:text-slate-300">Subir archivo</span>
+                                        <span className="text-slate-500 text-xs hover:text-slate-700 dark:text-slate-300">Subir archivo</span>
                                     )}
                                 </div>
                                 <input 
@@ -180,7 +180,7 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                 <button 
                     type="submit" 
                     disabled={processing}
-                    className="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 disabled:bg-emerald-500/50 text-slate-900 font-bold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                    className="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 disabled:bg-emerald-500/50 text-gray-100 dark:text-slate-900 font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
                 >
                     {processing ? (
                         <>

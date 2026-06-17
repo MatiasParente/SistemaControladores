@@ -38,17 +38,17 @@ export default function CreateEmpresa() {
         {isOpen && (
             <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
                 
-                <div className="bg-[#0b0f19] border border-gray-800 rounded-3xl p-6 w-full max-w-md shadow-2xl relative overflow-hidden">
+                <div className="bg-gray-100 dark:bg-[#0b0f19] border border-gray-200 dark:border-gray-800 rounded-3xl p-6 w-full max-w-md shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
                     
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <div className="p-2 bg-blue-500/10 rounded-lg">
                                 <Building2 className="w-6 h-6 text-blue-500" />
                             </div>
                             Crear Empresa
                         </h3>
-                        <button onClick={closeModal} className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800">
+                        <button onClick={closeModal} className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-100 dark:bg-slate-800">
                             <X className="w-5 h-5" />
                         </button>
                     </div>
@@ -66,7 +66,7 @@ export default function CreateEmpresa() {
                                     value={data.razonSocial} 
                                     onChange={e => setData('razonSocial', e.target.value)} 
                                     id="razonSocial" 
-                                    className="block w-full pl-11 pr-4 py-2.5 bg-[#070b14] border border-gray-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                                    className="block w-full pl-11 pr-4 py-2.5 bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 rounded-xl text-slate-800 dark:text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
                                     placeholder="Ej: Umbrella Corporation"
                                 />
                             </div>
@@ -83,7 +83,7 @@ export default function CreateEmpresa() {
                                     value={data.rut} 
                                     onChange={e => setData('rut', e.target.value)} 
                                     id="rut" 
-                                    className="block w-full pl-11 pr-4 py-2.5 bg-[#070b14] border border-gray-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                                    className="block w-full pl-11 pr-4 py-2.5 bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 rounded-xl text-slate-800 dark:text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
                                     placeholder="123456789012"
                                 />
                             </div>
@@ -100,7 +100,7 @@ export default function CreateEmpresa() {
                                     value={data.direccion} 
                                     onChange={e => setData('direccion', e.target.value)} 
                                     id="direccion" 
-                                    className="block w-full pl-11 pr-4 py-2.5 bg-[#070b14] border border-gray-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                                    className="block w-full pl-11 pr-4 py-2.5 bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 rounded-xl text-slate-800 dark:text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
                                     placeholder="Av. Principal 123"
                                 />
                             </div>
@@ -115,8 +115,8 @@ export default function CreateEmpresa() {
                                     id="logo" 
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 />
-                                <div className="flex items-center gap-3 w-full pl-3 pr-4 py-2.5 bg-[#070b14] border border-gray-800 rounded-xl transition-all shadow-inner group-hover:border-blue-500/50">
-                                    <div className="p-1.5 bg-slate-800 rounded-lg">
+                                <div className="flex items-center gap-3 w-full pl-3 pr-4 py-2.5 bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 rounded-xl transition-all shadow-inner group-hover:border-blue-500/50">
+                                    <div className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
                                         <ImageIcon className="h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
                                     </div>
                                     <span className="text-slate-400 text-sm truncate">
@@ -126,11 +126,11 @@ export default function CreateEmpresa() {
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-800/60">
+                        <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-200 dark:border-gray-800/60">
                             <button 
                                 type="button" 
                                 onClick={closeModal}
-                                className="px-5 py-2.5 text-sm font-semibold text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-xl transition-colors"
+                                className="px-5 py-2.5 text-sm font-semibold text-slate-400 hover:text-white bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-100 dark:bg-slate-800 rounded-xl transition-colors"
                             >
                                 Cancelar
                             </button>

@@ -11,8 +11,8 @@ export default function Dashboard({ atenciones, totalEmpresas, stats, total }) {
             header={
                 <div className="flex justify-between items-center">
                     <div>
-                        <h2 className="text-3xl font-bold text-white">Principal</h2>
-                        <p className="text-sm text-slate-400 mt-1">Resumen general</p>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Principal</h2>
+                        <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Resumen general</p>
                     </div>
                 </div>
             }

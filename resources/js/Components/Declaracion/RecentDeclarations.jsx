@@ -81,10 +81,10 @@ export default function RecentDeclarations({ declaraciones }) {
     };
 
     return (
-        <div className="bg-[#0B1121] p-6 rounded-3xl border border-gray-800 shadow-xl">
+        <div className="bg-gray-50 dark:bg-[#0B1121] p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-xl">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h3 className="text-lg font-bold text-white">Historial Fiscal</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Historial Fiscal</h3>
                     <p className="text-sm text-slate-400">Listado de declaraciones fiscales ingresadas en el sistema.</p>
                 </div>
             </div>
@@ -98,48 +98,55 @@ export default function RecentDeclarations({ declaraciones }) {
             />
 
             {(!declaraciones || !declaraciones.data || declaraciones.data.length === 0) ? (
-                <div className="flex flex-col items-center justify-center py-12 text-slate-500 border border-dashed border-gray-800 rounded-2xl">
+                <div className="flex flex-col items-center justify-center py-12 text-slate-500 border border-dashed border-gray-200 dark:border-gray-800 rounded-2xl">
                     <Calendar className="w-12 h-12 mb-3 text-slate-600" />
                     <p className="text-sm">No se encontraron declaraciones fiscales registradas.</p>
                     <p className="text-xs text-slate-600 mt-1">Utiliza el formulario de la derecha para registrar la primera.</p>
                 </div>
             ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="border-b border-gray-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                <div>
+                    <table className="w-full text-left border-collapse block md:table">
+                        <thead className="hidden md:table-header-group">
+                            <tr className="border-b border-gray-200 dark:border-gray-800 text-slate-400 text-xs font-semibold uppercase tracking-wider block md:table-row mb-4">
                                 <th className="py-4 px-3">Empresa</th>
                                 <th className="py-4 px-3">Año Fiscal</th>
-                                <th className="py-4 px-3">Usuario</th>
                                 <th className="py-4 px-3">Estado</th>
                                 <th className="py-4 px-3">Planillas</th>
-                                <th className="py-4 px-3 text-right"> </th>
+                                <th className="py-4 px-3 text-right">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-800/50">
+                        <tbody className="block md:table-row-group">
                             {declaraciones.data.map((decl) => {
                                 const fechaValida = decl.fechaFiscalInicio ? new Date(decl.fechaFiscalInicio) : null;
                                 const anioFiscal = fechaValida && !isNaN(fechaValida) ? fechaValida.getUTCFullYear() : 'N/A';
                                 
                                 return (
-                                    <tr key={decl.id} className="hover:bg-slate-800/10 transition-colors">
-                                        <td className="py-4 px-3">
-                                            <div className="font-semibold text-slate-200">
-                                                {decl.empresa?.razonSocial || 'N/A'}
-                                            </div>
-                                            <div className="text-xs text-slate-500">
-                                                RUT: {decl.empresa?.rut || 'N/A'}
+                                    <tr key={decl.id} className="bg-gray-50 dark:bg-[#070b14] md:bg-transparent rounded-2xl md:rounded-none p-4 md:p-0 border border-gray-200 dark:border-gray-800 md:border-none md:border-b md:border-gray-900/50 block md:table-row mb-4 md:mb-0 hover:bg-slate-100 dark:bg-slate-800/10 transition-colors">
+                                        <td className="py-3 md:py-4 px-3 flex flex-col md:table-cell border-b border-gray-200 dark:border-gray-800/50 md:border-none gap-1 md:gap-0">
+                                            <span className="md:hidden text-slate-500 text-xs uppercase font-semibold">Empresa</span>
+                                            <div>
+                                                <div className="font-semibold text-slate-800 dark:text-slate-200">
+                                                    {decl.empresa?.razonSocial || 'N/A'}
+                                                </div>
+                                                <div className="text-xs text-slate-500">
+                                                    RUT: {decl.empresa?.rut || 'N/A'}
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-3 text-slate-300 font-medium">
+                                        <td className="py-3 md:py-4 px-3 flex flex-col md:table-cell border-b border-gray-200 dark:border-gray-800/50 md:border-none gap-1 md:gap-0 text-slate-700 dark:text-slate-300 font-medium">
+                                            <span className="md:hidden text-slate-500 text-xs uppercase font-semibold">Año Fiscal</span>
                                             {anioFiscal}
                                         </td>
-                                        <td className="py-4 px-3">
-                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${colorEstado(decl.estado?.tipoEstado)}`}>
-                                                {decl.estado?.tipoEstado || 'Pendiente'}
-                                            </span>
+                                        <td className="py-3 md:py-4 px-3 flex flex-col md:table-cell border-b border-gray-200 dark:border-gray-800/50 md:border-none gap-2 md:gap-0">
+                                            <span className="md:hidden text-slate-500 text-xs uppercase font-semibold">Estado</span>
+                                            <div>
+                                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${colorEstado(decl.estado?.tipoEstado)}`}>
+                                                    {decl.estado?.tipoEstado || 'Pendiente'}
+                                                </span>
+                                            </div>
                                         </td>
-                                        <td className="py-4 px-3">
+                                        <td className="py-3 md:py-4 px-3 flex flex-col md:table-cell border-b border-gray-200 dark:border-gray-800/50 md:border-none gap-2 md:gap-0">
+                                            <span className="md:hidden text-slate-500 text-xs uppercase font-semibold">Planillas</span>
                                             <div className="flex flex-wrap gap-1.5 max-w-xs">
                                                 {['Original', 'IRAE', 'Patrimonio', 'Balance'].map((tipo) => {
                                                     const pl = getPlantillaByTipo(decl.plantillas || [], tipo);
@@ -175,7 +182,7 @@ export default function RecentDeclarations({ declaraciones }) {
                                                         <button 
                                                             key={tipo}
                                                             onClick={() => triggerUpload(decl.id, tipo)}
-                                                            className="px-2 py-0.5 bg-gray-800/40 hover:bg-gray-700/60 text-slate-500 hover:text-slate-300 border border-gray-800/80 rounded text-[11px] transition-colors cursor-pointer"
+                                                            className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800/40 hover:bg-gray-700/60 text-slate-500 hover:text-slate-700 dark:text-slate-300 border border-gray-200 dark:border-gray-800/80 rounded text-[11px] transition-colors cursor-pointer"
                                                             title={`Subir ${tipo}`}
                                                         >
                                                             {labelMap[tipo]}
@@ -184,25 +191,27 @@ export default function RecentDeclarations({ declaraciones }) {
                                                 })}
                                             </div>
                                         </td>
-                                        {decl.estado?.tipoEstado === 'Eliminado' && (
-                                            <td className="py-4 px-3 text-right">
-                                                <button
-                                                    onClick={() => restaurarDeclaracion(decl.id)}
-                                                    className="p-2 hover:bg-green-500/10 hover:text-green-400 text-slate-400 rounded-lg transition-colors inline-flex items-center"
-                                                    title="Restaurar declaración"
+                                        <td className="py-4 px-3 flex justify-end md:table-cell mt-2 md:mt-0">
+                                            <div className="flex justify-end items-center gap-3 w-full md:w-auto">
+                                                {decl.estado?.tipoEstado === 'Eliminado' && (
+                                                    <button
+                                                        onClick={() => restaurarDeclaracion(decl.id)}
+                                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-green-500/10 md:bg-transparent rounded-lg p-2 md:p-1 text-green-500 md:text-slate-400 hover:text-green-400 hover:bg-green-500/20 md:hover:bg-transparent transition-colors"
+                                                        title="Restaurar declaración"
+                                                    >
+                                                        <RotateCcw className="w-4.5 h-4.5 md:w-5 md:h-5" />
+                                                        <span className="md:hidden text-sm font-medium">Restaurar</span>
+                                                    </button>
+                                                )}
+                                                <button 
+                                                    onClick={() => eliminar(decl.id)}
+                                                    className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-rose-500/10 md:bg-transparent rounded-lg p-2 md:p-1 text-rose-500 md:text-slate-400 hover:text-rose-500 hover:bg-rose-500/20 md:hover:bg-transparent transition-colors"
+                                                    title="Eliminar declaración"
                                                 >
-                                                    <RotateCcw className="w-4.5 h-4.5" />
+                                                    <Trash2 className="w-4.5 h-4.5 md:w-5 md:h-5" />
+                                                    <span className="md:hidden text-sm font-medium">Eliminar</span>
                                                 </button>
-                                            </td>
-                                        )}
-                                        <td className="py-4 px-3 text-right">
-                                            <button 
-                                                onClick={() => eliminar(decl.id)}
-                                                className="p-2 hover:bg-red-500/10 hover:text-red-400 text-slate-400 rounded-lg transition-colors inline-flex items-center"
-                                                title="Eliminar declaración"
-                                            >
-                                                <Trash2 className="w-4.5 h-4.5" />
-                                            </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 );
@@ -223,7 +232,7 @@ export default function RecentDeclarations({ declaraciones }) {
                             if (!firstLink.url) {
                                 return (
                                     <span 
-                                        className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800/20 text-slate-600 cursor-not-allowed border border-gray-800/40 select-none"
+                                        className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 dark:bg-slate-800/20 text-slate-600 cursor-not-allowed border border-gray-200 dark:border-gray-800/40 select-none"
                                         dangerouslySetInnerHTML={{ __html: label }} 
                                     />
                                 );
@@ -232,7 +241,7 @@ export default function RecentDeclarations({ declaraciones }) {
                             return (
                                 <Link
                                     href={firstLink.url}
-                                    className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800/60 text-slate-300 hover:bg-slate-700 hover:text-white border border-gray-700/30 transition-colors shadow-sm"
+                                    className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-slate-700 hover:text-white border border-gray-300 dark:border-gray-700/30 transition-colors shadow-sm"
                                     dangerouslySetInnerHTML={{ __html: label }}
                                 />
                             );
@@ -240,7 +249,7 @@ export default function RecentDeclarations({ declaraciones }) {
                     </div>
                     
                     <div className="text-sm font-medium text-slate-400 select-none">
-                        Página <span className="font-bold text-white mx-0.5">{declaraciones?.current_page}</span> de <span className="font-bold text-white mx-0.5">{declaraciones?.last_page}</span>
+                        Página <span className="font-bold text-gray-800 dark:text-slate-200 mx-0.5">{declaraciones?.current_page}</span> de <span className="font-bold text-gray-800 dark:text-gray-300 mx-0.5">{declaraciones?.last_page}</span>
                     </div>
                     
                     <div>
@@ -252,7 +261,7 @@ export default function RecentDeclarations({ declaraciones }) {
                             if (!lastLink.url) {
                                 return (
                                     <span 
-                                        className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800/20 text-slate-600 cursor-not-allowed border border-gray-800/40 select-none"
+                                        className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 dark:bg-slate-800/20 text-slate-600 cursor-not-allowed border border-gray-200 dark:border-gray-800/40 select-none"
                                         dangerouslySetInnerHTML={{ __html: label }} 
                                     />
                                 );
@@ -261,7 +270,7 @@ export default function RecentDeclarations({ declaraciones }) {
                             return (
                                 <Link
                                     href={lastLink.url}
-                                    className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800/60 text-slate-300 hover:bg-slate-700 hover:text-white border border-gray-700/30 transition-colors shadow-sm"
+                                    className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-slate-700 hover:text-white border border-gray-300 dark:border-gray-700/30 transition-colors shadow-sm"
                                     dangerouslySetInnerHTML={{ __html: label }}
                                 />
                             );

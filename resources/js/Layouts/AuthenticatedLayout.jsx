@@ -3,7 +3,8 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Sun, Moon } from 'lucide-react';
 import ErrorModal from '@/Components/ErrorModal';
 
 // header es lo de arriba de las paginas, children es el contenido de la pagina que si se borra queda todo en blanco
@@ -14,15 +15,15 @@ export default function AuthenticatedLayout({ header, children }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
-        <div className="min-h-screen flex bg-[#070A13] text-gray-100">
+        <div className="min-h-screen flex bg-white dark:bg-[#070A13] text-gray-900 dark:text-gray-100">
             <ErrorModal />
 
-            {/* Menú Lateral de Escritorio (Pasamos el usuario actual como prop) */}
+            {/* Menú Lateral de Escritorio */}
             <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
                 <SidebarContent user={user} />
             </aside>
 
-            {/* Menú Lateral Móvil */}
+            {/* Menú Lateral celular */}
             <div className={`fixed inset-0 z-50 flex md:hidden transition-opacity duration-300 ${
                 isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
             }`}>
@@ -31,32 +32,31 @@ export default function AuthenticatedLayout({ header, children }) {
                 <aside className={`relative w-64 max-w-xs flex-col flex transition-transform duration-300 ${
                     isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}>
-                    {/* Pasamos el usuario actual como prop también aquí */}
                     <SidebarContent user={user} />
                 </aside>
             </div>
 
             <div className="flex-1 flex flex-col md:pl-64">
                 
-                <header className="h-16 flex items-center justify-between px-6 bg-[#0B1121] border-b border-gray-800 md:hidden">
+                <header className="h-16 flex items-center justify-between px-6 bg-white dark:bg-[#0B1121] border-b border-gray-200 dark:border-gray-800 md:hidden">
                     <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    <span className="font-bold text-emerald-400">CtrlConta</span>
+                    <ApplicationLogo className="w-10 h-10" />
                     <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white">
                         {user.name.charAt(0)}
                     </div>
                 </header>
 
                 {header && (
-                    <header className="py-6 px-8 bg-[#070A13]">
+                    <header className="py-6 px-8 bg-white dark:bg-[#070A13] text-gray-900 dark:text-gray-100">
                         {header}
                     </header>
                 )}
 
-                <main className="flex-1 p-8">
+                <main className="flex-1 p-8 bg-white dark:bg-[#070A13] text-gray-900 dark:text-gray-100">
                     {children}
                 </main>
             </div>
@@ -64,23 +64,37 @@ export default function AuthenticatedLayout({ header, children }) {
     );
 }
 
-// Recibimos 'user' desde las propiedades del componente padre
 function SidebarContent({ user, activeRoute }) {
+    const [theme, setTheme] = useState(
+        localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'
+    );
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+        localStorage.theme = newTheme;
+        if (newTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    };
+
     return (
-        <div className="flex flex-col h-full bg-[#0B1121] text-gray-300 p-6">
+        <div className="flex flex-col h-full bg-slate-50 dark:bg-[#070A13] text-gray-900 dark:text-gray-100 text-gray-300 p-6">
             <div className="flex items-center gap-3 mb-10">
                 <div className="w-10 h-10 bg-gradient-to-tr from-emerald-400 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
-                <span className="text-xl font-bold text-white tracking-wider">Ctrl</span>
+                <ApplicationLogo className="w-10 h-10" />
             </div>
 
             <nav className="flex-1 space-y-2">
                 <Link 
                     href={route('dashboard')} 
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
                         route().current('dashboard') 
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                             : 'hover:bg-gray-800/50 hover:text-white'
@@ -94,7 +108,7 @@ function SidebarContent({ user, activeRoute }) {
 
                 <Link 
                     href={route('empresas.index')} 
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
                         route().current('empresas.*') 
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                             : 'hover:bg-gray-800/50 hover:text-white'
@@ -108,7 +122,7 @@ function SidebarContent({ user, activeRoute }) {
 
                 <Link 
                     href={route('declaraciones.index')} 
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
                         route().current('declaraciones.*') 
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                             : 'hover:bg-gray-800/50 hover:text-white'
@@ -123,7 +137,7 @@ function SidebarContent({ user, activeRoute }) {
                 {user?.is_admin ? (
                     <Link 
                     href={route('usuarios.index')} 
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
                         route().current('usuarios.*') 
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                             : 'hover:bg-gray-800/50 hover:text-white'
@@ -137,10 +151,16 @@ function SidebarContent({ user, activeRoute }) {
                 ) : null}
             </nav>
 
-            <div className="pt-6 border-t border-gray-800">
+            <div className="pt-6 border-t border-gray-200 dark:border-gray-800">
+                <button 
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-800/50 hover:text-white" 
+                    onClick={toggleTheme}>
+                    {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                    {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
+                </button>
                 <Link 
                     href={route('profile.edit')} 
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
                         route().current('profile.edit') 
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                             : 'hover:bg-gray-800/50 hover:text-white'
@@ -155,7 +175,7 @@ function SidebarContent({ user, activeRoute }) {
                     href={route('logout')} 
                     method="post" 
                     as="button" 
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 hover:text-red-400 transition-all duration-200"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 hover:text-red-400"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

@@ -74,6 +74,7 @@ class UserController extends Controller
         if (!auth()->user()->is_admin) {
             abort(403, 'No tienes permiso para realizar esta acción o ver esta página.');
         }
+        
         $user = User::find($id);
         
         if (!$user) {
@@ -96,7 +97,8 @@ class UserController extends Controller
         if (!empty($validated['password'])) {
             $data['password'] = Hash::make($validated['password']);
         }
-        
+
+        $user->empresas()->sync($request->input('empresas_ids', []));
         $user->update($data);
 
         return back()->with('message', 'Usuario actualizado con éxito');

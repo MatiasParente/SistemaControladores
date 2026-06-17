@@ -8,8 +8,8 @@ export default function Index({ users, empresas, filtroActual, filtroActualEmpre
         <AuthenticatedLayout
             header={<div className="flex justify-between items-center">
                     <div>
-                        <h2 className="text-3xl font-bold text-white">Usuarios</h2>
-                        <p className="text-sm text-slate-400 mt-1">Gestión de usuarios.</p>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Usuarios</h2>
+                        <p className="text-sm text-slate-400 mt-1 dark:text-slate-500">Gestión de usuarios.</p>
                     </div>
                 </div>}
         >
@@ -27,7 +27,7 @@ export default function Index({ users, empresas, filtroActual, filtroActualEmpre
 
             <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-full">
-                    <ListUser users={users} />
+                    <ListUser users={users} empresas={empresas} />
                 </div>
             </div>
         </AuthenticatedLayout>

@@ -39,14 +39,14 @@ export default function Login({ status, canResetPassword }) {
 
             <form onSubmit={submit} className="space-y-5">
                 <div>
-                    <InputLabel htmlFor="email" value="Correo Electrónico" className="text-slate-300 font-medium mb-1.5 block" />
+                    <InputLabel htmlFor="email" value="Correo Electrónico" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block" />
 
                     <TextInput
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full bg-[#070b14] border border-gray-800 text-white rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                        className="mt-1 block w-full bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 text-white rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                         autoComplete="username"
                         isFocused={true}
                         onChange={(e) => setData('email', e.target.value)}
@@ -59,7 +59,7 @@ export default function Login({ status, canResetPassword }) {
 
                 <div>
                     <div className="flex justify-between items-center mb-1.5">
-                        <InputLabel htmlFor="password" value="Contraseña" className="text-slate-300 font-medium block" />
+                        <InputLabel htmlFor="password" value="Contraseña" className="text-slate-700 dark:text-slate-300 font-medium block" />
                         
                         {canResetPassword && (
                             <Link
@@ -76,7 +76,7 @@ export default function Login({ status, canResetPassword }) {
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full bg-[#070b14] border border-gray-800 text-white rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                        className="mt-1 block w-full bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 text-white rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
                         placeholder="••••••••"
@@ -91,9 +91,9 @@ export default function Login({ status, canResetPassword }) {
                             name="remember"
                             checked={data.remember}
                             onChange={(e) => setData('remember', e.target.checked)}
-                            className="bg-[#070b14] border-gray-800 rounded text-blue-600 focus:ring-blue-500/50"
+                            className="bg-white dark:bg-[#070b14] border-gray-200 dark:border-gray-800 rounded text-blue-600 focus:ring-blue-500/50"
                         />
-                        <span className="ms-2.5 text-sm text-slate-400 group-hover:text-slate-200 transition-colors select-none">
+                        <span className="ms-2.5 text-sm text-slate-400 group-hover:text-slate-800 dark:text-slate-200 transition-colors select-none">
                             Recuérdame
                         </span>
                     </label>

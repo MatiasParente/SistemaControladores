@@ -10,8 +10,8 @@ export default function Edit({ mustVerifyEmail, status }) {
             header={
                 <div className="flex justify-between items-center">
                     <div>
-                        <h2 className="text-3xl font-bold text-white">Perfil</h2>
-                        <p className="text-sm text-slate-400 mt-1">Información de usuario.</p>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Perfil</h2>
+                        <p className="text-sm text-slate-400 mt-1 dark:text-slate-500">Información de usuario.</p>
                     </div>
                 </div>
             }
@@ -21,19 +21,19 @@ export default function Edit({ mustVerifyEmail, status }) {
             <div className="space-y-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     
-                    <div className="bg-[#0b1329] border border-[#1e293b] p-6 shadow-xl rounded-xl">
+                    <div className="bg-gray-100 dark:bg-[#0b1329] border border-gray-200 dark:border-[#1e293b] p-6 shadow-xl rounded-xl">
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
-                            className="max-w-xl text-slate-200"
+                            className="max-w-xl text-slate-800 dark:text-slate-200"
                         />
                     </div>
 
-                    <div className="bg-[#0b1329] border border-[#1e293b] p-6 shadow-xl rounded-xl">
-                        <UpdatePasswordForm className="max-w-xl text-slate-200" />
+                    <div className="bg-gray-100 dark:bg-[#0b1329] border border-gray-200 dark:border-[#1e293b] p-6 shadow-xl rounded-xl">
+                        <UpdatePasswordForm className="max-w-xl text-slate-800 dark:text-slate-200" />
                     </div>
-                    <div className="bg-[#0b1329] border border-[#1e293b] p-6 shadow-xl rounded-xl">
-                        <DeleteUserForm className="max-w-xl text-slate-200" />
+                    <div className="bg-gray-100 dark:bg-[#0b1329] border border-gray-200 dark:border-[#1e293b] p-6 shadow-xl rounded-xl">
+                        <DeleteUserForm className="max-w-xl text-slate-800 dark:text-slate-200" />
                     </div>
                     
                 </div>

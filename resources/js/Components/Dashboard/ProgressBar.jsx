@@ -11,8 +11,8 @@ export default function ProgressBar({ stats, total }) {
     const finalizadasPorcentaje = (finalizadas / safeTotal) * 100;
 
     return (
-    <div className="w-full bg-[#0b0f19] border border-slate-800/60 rounded-2xl p-6">
-        <h3 className="text-xl font-bold text-white mb-6 tracking-wide">
+    <div className="w-full bg-gray-50 dark:bg-[#0b0f19] border border-gray-200 dark:border-gray-800/60 rounded-2xl p-6 shadow-xl">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 tracking-wide">
             Estado Global Año Fiscal
         </h3>
         
@@ -25,7 +25,7 @@ export default function ProgressBar({ stats, total }) {
                         {pendientes} ({Math.round(pendientesPorcentaje)}%)
                     </span>
                 </div>
-                <div className="w-full h-2 rounded-full overflow-hidden bg-slate-800/50">
+                <div className="w-full h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800/50">
                     <div 
                         className="bg-yellow-500 h-full rounded-full transition-all duration-500 ease-out" 
                         style={{ width: `${pendientesPorcentaje}%` }}
@@ -40,7 +40,7 @@ export default function ProgressBar({ stats, total }) {
                         {enProceso} ({Math.round(enProcesoPorcentaje)}%)
                     </span>
                 </div>
-                <div className="w-full h-2 rounded-full overflow-hidden bg-slate-800/50">
+                <div className="w-full h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800/50">
                     <div 
                         className="bg-blue-500 h-full rounded-full transition-all duration-500 ease-out" 
                         style={{ width: `${enProcesoPorcentaje}%` }}
@@ -56,7 +56,7 @@ export default function ProgressBar({ stats, total }) {
                     </span>
                 </div>
 
-                <div className="w-full h-2 rounded-full overflow-hidden bg-slate-800/50">
+                <div className="w-full h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800/50">
                     <div 
                         className="bg-emerald-500 h-full rounded-full transition-all duration-500 ease-out" 
                         style={{ width: `${finalizadasPorcentaje}%` }}
