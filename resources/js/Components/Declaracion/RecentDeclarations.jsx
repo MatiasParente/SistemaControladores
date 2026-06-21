@@ -1,10 +1,14 @@
 import { useRef, useState, useEffect } from 'react'; 
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Calendar, Download, X, Trash2, RotateCcw } from 'lucide-react';
+import Mensaje from '@/Components/Mensaje';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 export default function RecentDeclarations({ declaraciones }) {
     const fileInputRef = useRef(null);
     const [uploadState, setUploadState] = useState({ declaracionId: null, tipo: null });
+    const [confirmConfig, setConfirmConfig] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+    const { flash } = usePage().props;
 
     const triggerUpload = (declId, tipo) => {
         setUploadState({ declaracionId: declId, tipo });
@@ -19,7 +23,6 @@ export default function RecentDeclarations({ declaraciones }) {
         if (!file || !uploadState.declaracionId || !uploadState.tipo) return;
         const extensionesPermitidas = /(\.xlsx|\.xls)$/i;
         if (!extensionesPermitidas.exec(file.name)) {
-            alert('Por favor, selecciona únicamente archivos de Excel (.xlsx o .xls)');
             e.target.value = null;
             return;
         }
@@ -33,18 +36,21 @@ export default function RecentDeclarations({ declaraciones }) {
             preserveScroll: true,
             onSuccess: () => {
                 setUploadState({ declaracionId: null, tipo: null });
-                alert('Archivo subido con éxito.');
             }
         });
     };
 
     const eliminarPlantilla = (idPlantilla, tipo) => {
-        if (confirm(`¿Estás seguro de que deseas eliminar el archivo de ${tipo}?`)) {
-            router.delete(route('plantillas.destroy', idPlantilla), {
-                preserveScroll: true,
-                onSuccess: () => alert('Archivo eliminado con éxito.')
-            });
-        }
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Eliminar Plantilla',
+            message: `¿Estás seguro de que deseas eliminar el archivo de ${tipo}? Esta acción no se puede deshacer.`,
+            onConfirm: () => {
+                router.delete(route('plantillas.destroy', idPlantilla), {
+                    onSuccess: () => {}
+                });
+            }
+        }); 
     };
     
     const colorEstado = (statusName) => {
@@ -61,19 +67,29 @@ export default function RecentDeclarations({ declaraciones }) {
     };
 
     const eliminar = (id) => {
-        if (confirm('¿Estás seguro de que deseas eliminar esta declaración fiscal? Si se encuentra en estado "Eliminado" se borrara permanentemente la declaracion, en otro caso solo se cambiara el estado.')) {
-            router.delete(route('declaraciones.destroy', id), {
-                onSuccess: () => alert('Declaración eliminada con éxito.')
-            });
-        }
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Eliminar Declaración Fiscal',
+            message: '¿Estás seguro de que deseas eliminar esta declaración fiscal? Si la declaración ya tiene el estado "eliminado" la acción no se podrá deshacer.',
+            onConfirm: () => {
+                router.delete(route('declaraciones.destroy', id), {
+                    onSuccess: () => {}
+                });
+            }
+        }); 
     };
 
     const restaurarDeclaracion = (id) => {
-        if (confirm('¿Estás seguro de que deseas restaurar esta declaración fiscal?')) {
-            router.post(route('declaraciones.restaurar', id), {
-                onSuccess: () => alert('Declaración restaurada con éxito.')
-            });
-        }
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Restaurar Declaración Fiscal',
+            message: '¿Estás seguro de que deseas restaurar esta declaración fiscal?',
+            onConfirm: () => {
+                router.post(route('declaraciones.restaurar', id), {
+                    onSuccess: () => {}
+                });
+            }
+        });
     };
 
     const getPlantillaByTipo = (plantillas, tipo) => {
@@ -278,6 +294,14 @@ export default function RecentDeclarations({ declaraciones }) {
                     </div>
                 </div>
             )}
+            <Mensaje mensaje={flash.message} />
+            <ConfirmModal 
+                isOpen={confirmConfig.isOpen}
+                title={confirmConfig.title}
+                message={confirmConfig.message}
+                onConfirm={confirmConfig.onConfirm}
+                onCancel={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+            />
         </div>
     );
 }

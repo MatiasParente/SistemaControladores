@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { router, Link, useForm } from '@inertiajs/react';
-import { Trash2, Edit, Check, X, Building2 } from 'lucide-react';
+import { router, Link, useForm, usePage } from '@inertiajs/react';
+import { Trash2, Edit, Check, X, Building2, Key } from 'lucide-react';
 import SelectEmpresa from '@/Components/Usuarios/SelectEmpresa';
+import Mensaje from '@/Components/Mensaje';
+import RelacionesModal from '@/Components/RelacionesModal';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 export default function ListUsuarios({ users, empresas = [] }) {
     const [editingId, setEditingId] = useState(null);
+
+    const { flash } = usePage().props;
+
+    const [modalConfig, setModalConfig] = useState({ isOpen: false, url: '', title: '' });
+    const [confirmConfig, setConfirmConfig] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
     // Formulario de Inertia para actualizar los datos
     const { data, setData, post, processing, reset } = useForm({
@@ -21,7 +29,7 @@ export default function ListUsuarios({ users, empresas = [] }) {
         setData({
             name: usuario.name,
             email: usuario.email,
-            is_admin: usuario.is_admin ?? false, // Conserva el rol real del usuario
+            is_admin: usuario.is_admin ?? false,
             empresas_ids: usuario.empresas ? usuario.empresas.map(e => e.id) : [],
             _method: 'put'
         });
@@ -42,13 +50,29 @@ export default function ListUsuarios({ users, empresas = [] }) {
     };
 
     const eliminarUsuario = (id) => {
-        if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-            router.delete(route('usuarios.destroy', id), {
-                onSuccess: () => {
-                    alert('Usuario eliminado con éxito.');
-                }
-            });
-        }
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Eliminar Usuario',
+            message: '¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.',
+            onConfirm: () => {
+                router.delete(route('usuarios.destroy', id), {
+                    onSuccess: () => {}
+                });
+            }
+        });
+    };
+
+    const restaurarContraseña = (id) => {
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Restaurar Contraseña',
+            message: '¿Seguro que deseas resetear la contraseña de este usuario? Se volverá a la contraseña por defecto.',
+            onConfirm: () => {
+                router.post(route('usuarios.restaurarContraseña', id), {}, {
+                    onSuccess: () => {}
+                });
+            }
+        });
     };
 
     return (
@@ -77,7 +101,7 @@ export default function ListUsuarios({ users, empresas = [] }) {
                             return (
                                 <tr key={usuario.id} className="bg-gray-50 dark:bg-[#070b14] md:bg-transparent rounded-2xl md:rounded-none p-4 md:p-0 border border-gray-200 dark:border-gray-800 md:border-none md:border-b md:border-gray-900/50 block md:table-row mb-4 md:mb-0 hover:bg-slate-100 dark:bg-slate-800/10 transition-colors">
                                     
-                                    {/* Nombre */}
+                                    {/*Nombre*/}
                                     <td className="py-3 md:py-4 px-3 flex flex-col md:table-cell border-b border-gray-200 dark:border-gray-800/50 md:border-none gap-1 md:gap-0">
                                         <span className="md:hidden text-slate-500 text-xs uppercase font-semibold">Nombre</span>
                                         <div className="w-full">
@@ -86,7 +110,7 @@ export default function ListUsuarios({ users, empresas = [] }) {
                                                     type="text"
                                                     value={data.name}
                                                     onChange={e => setData('name', e.target.value)}
-                                                    className="w-full bg-gray-50 dark:bg-[#070b14] border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
+                                                    className="w-full bg-white dark:bg-[#070b14] border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
                                                 />
                                             ) : (
                                                 <div className="font-semibold text-slate-800 dark:text-slate-200">{usuario.name}</div>
@@ -94,7 +118,7 @@ export default function ListUsuarios({ users, empresas = [] }) {
                                         </div>
                                     </td>
 
-                                    {/* Correo */}
+                                    {/*correo */}
                                     <td className="py-3 md:py-4 px-3 flex flex-col md:table-cell border-b border-gray-200 dark:border-gray-800/50 md:border-none gap-1 md:gap-0 text-slate-700 dark:text-slate-300">
                                         <span className="md:hidden text-slate-500 text-xs uppercase font-semibold">Correo</span>
                                         <div className="w-full">
@@ -103,7 +127,7 @@ export default function ListUsuarios({ users, empresas = [] }) {
                                                     type="email"
                                                     value={data.email}
                                                     onChange={e => setData('email', e.target.value)}
-                                                    className="w-full bg-gray-50 dark:bg-[#070b14] border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
+                                                    className="w-full bg-white dark:bg-[#070b14] border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
                                                 />
                                             ) : (
                                                 <div className="text-slate-700 dark:text-slate-300">{usuario.email}</div>
@@ -131,14 +155,30 @@ export default function ListUsuarios({ users, empresas = [] }) {
                                                             {usuario.empresas.length} {usuario.empresas.length === 1 ? 'Empresa' : 'Empresas'}
                                                         </span>
                                                         
-                                                        <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max max-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50">
+                                                        <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max max-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                             <div className="bg-slate-100 dark:bg-slate-800 border border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-2 px-3 shadow-xl">
                                                                 <div className="font-semibold mb-1 border-b border-slate-700 pb-1.5 text-slate-400">Empresas Asignadas</div>
                                                                 <ul className="text-left max-h-32 overflow-y-auto custom-scrollbar mt-1.5 space-y-1">
-                                                                    {usuario.empresas.map((e, idx) => (
-                                                                        <li key={e.id || idx} className="truncate text-slate-700 dark:text-slate-300">{e.razonSocial}</li>
+                                                                    {usuario.empresas.slice(0, 10).map((empresa, idx) => (
+                                                                        <li key={empresa.id || idx} className="truncate text-slate-700 dark:text-slate-300">{empresa.razonSocial}</li>
                                                                     ))}
                                                                 </ul>
+                                                                {usuario.empresas.length > 10 && (
+                                                                    <div className="mt-2 pt-2 border-t border-slate-700">
+                                                                        <button 
+                                                                            onClick={() =>
+                                                                                setModalConfig({
+                                                                                    isOpen: true,
+                                                                                    url: `/usuarios/${usuario.id}/empresas`,
+                                                                                    title: `Empresas de ${usuario.name}`
+                                                                                })
+                                                                            }
+                                                                            className="w-full text-center text-xs font-semibold text-blue-400 hover:text-blue-300 py-1 rounded bg-blue-500/10 hover:bg-blue-500/20 transition-colors"
+                                                                        >
+                                                                            Ver todas ({usuario.empresas.length})
+                                                                        </button>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                             <div className="hidden md:block w-2.5 h-2.5 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                             <div className="md:hidden w-2.5 h-2.5 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -158,6 +198,13 @@ export default function ListUsuarios({ users, empresas = [] }) {
                                     <td className="py-4 px-3 flex justify-end md:table-cell mt-2 md:mt-0">
                                         {isEditing ? (
                                             <div className="flex justify-end gap-2 w-full md:w-auto">
+                                                <button
+                                                    onClick={() => restaurarContraseña(usuario.id)}
+                                                    className="inline-flex flex-1 md:flex-none items-center justify-center p-2 md:p-1.5 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-white disabled:opacity-50"
+                                                    title="Restablecer contraseña"
+                                                >
+                                                    <Key className="w-4 h-4 mr-2 md:mr-0" />
+                                                </button>
                                                 <button
                                                     onClick={() => guardarEdicion(usuario.id)}
                                                     disabled={processing}
@@ -260,6 +307,21 @@ export default function ListUsuarios({ users, empresas = [] }) {
                     })()}
                 </div>
             </div>
+            <Mensaje mensaje={flash.message} />
+            <RelacionesModal
+                isOpen={modalConfig.isOpen}
+                onClose={() => setModalConfig({ ...modalConfig, isOpen: false })}
+                url={modalConfig.url}
+                title={modalConfig.title}
+            />
+            
+            <ConfirmModal 
+                isOpen={confirmConfig.isOpen}
+                title={confirmConfig.title}
+                message={confirmConfig.message}
+                onConfirm={confirmConfig.onConfirm}
+                onCancel={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+            />
         </div>
     );
 }

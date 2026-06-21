@@ -7,58 +7,71 @@ use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        // aca definimos los middleware que se ejecutaran antes de cualquier metodo del controlador
+        //es la forma correcta de hacerlo en laravel 11 para los controladores que implementan HasMiddleware
+        // se pone esto si queremos que el usuario comun no pueda acceder a estos metodos
+        return [
+            new Middleware(function ($request, $next) {
+                if (!auth()->check() || !auth()->user()->is_admin) {
+                    abort(403, 'Acceso denegado. Se requiere rol de administrador.');
+                }
+                return $next($request);
+            })
+        ];
+    }
 
     public function index(Request $request)
     {  
-        if (!auth()->user()->is_admin) {
-            abort(403, 'No tienes permiso para realizar esta acción o ver esta página.');
-        }
 
-        $buscar = $request->input('buscar');
-        $buscarEmpresa = $request->input('buscarEmpresa');
+        $buscar = $request->input('buscar'); // capturamos el parametro de busqueda, en el frontend envia el parametro buscar
+        $buscarEmpresa = $request->input('buscarEmpresa'); // capturamos el parametro de busqueda de empresa
 
-        $users = User::query()
-            ->with(['empresas'])
-            ->latest()
-            ->when($buscar, function ($query) use ($buscar) {
+        $users = User::query() // inicializamos la consulta
+            ->with(['empresas']) // cargamos la relacion con empresas
+            ->latest() // ordenamos por fecha de creacion
+            ->when($buscar, function ($query) use ($buscar) { // si existe el parametro de busqueda, aplicamos un filtro
                 $query->where(function ($q) use ($buscar) {
-                    $q->where('name', 'ILIKE', "%{$buscar}%")
-                      ->orWhere('email', 'ILIKE', "%{$buscar}%");
+                    $q->where('name', 'ILIKE', "%{$buscar}%") // buscamos por nombre
+                    ->orWhere('apellido', 'ILIKE', "%{$buscar}%") // o por apellido
+                    ->orWhere('email', 'ILIKE', "%{$buscar}%"); // o por email
                 });
             })
-            ->when($buscarEmpresa, function ($query) use ($buscarEmpresa) {
-                $query->whereHas('empresas', function ($q) use ($buscarEmpresa) {
+            ->when($buscarEmpresa, function ($query) use ($buscarEmpresa) { // si existe el parametro de busqueda de empresa, aplicamos un filtro
+                $query->whereHas('empresas', function ($q) use ($buscarEmpresa) { // filtramos por empresa
                     $q->where('empresa.id', $buscarEmpresa);
                 });
             })
-            ->paginate(10)
-            ->withQueryString();
+            ->paginate(10) // paginamos los resultados en bloques de 10
+            ->withQueryString(); // mantenemos los parametros de busqueda en la url
 
-        $empresas = Empresa::select('id', 'razonSocial')->orderBy('razonSocial')->get();
+        $empresas = Empresa::select('id', 'razonSocial')->orderBy('razonSocial')->get(); // obtenemos todas las empresas para el select
 
-        return Inertia::render('Usuarios/Index', [
-            'users' => $users,
-            'filtroActual' => $buscar,
-            'filtroActualEmpresa' => $buscarEmpresa,
-            'empresas' => $empresas,
+        return Inertia::render('Usuarios/Index', [ // renderizamos la vista Usuarios/Index con los datos de las variables
+            'users' => $users, // enviamos los usuarios
+            'filtroActual' => $buscar, // enviamos el filtro actual
+            'filtroActualEmpresa' => $buscarEmpresa, // enviamos el filtro actual de empresa
+            'empresas' => $empresas, // enviamos las empresas
         ]);
     }
 
     public function store(Request $request)
     {
-        if (!auth()->user()->is_admin) {
-            abort(403, 'No tienes permiso para realizar esta acción o ver esta página.');
-        }
+        // validamos los datos que vienen del formulario de creacion de usuarios
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|min:8',
             'is_admin' => 'required|boolean',
         ]);
-
+        // creamos el usuario
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -71,9 +84,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {   
-        if (!auth()->user()->is_admin) {
-            abort(403, 'No tienes permiso para realizar esta acción o ver esta página.');
-        }
+
         
         $user = User::find($id);
         
@@ -106,9 +117,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        if (!auth()->user()->is_admin) {
-            abort(403, 'No tienes permiso para realizar esta acción o ver esta página.');
-        }
+
         $user = User::find($id);
         
         if (!$user) {
@@ -118,5 +127,14 @@ class UserController extends Controller
         $user->delete();
 
         return back()->with('message', 'Usuario eliminado con éxito');
+    }
+    public function restaurarContraseña($id)
+    {
+        $user = User::findOrFail($id); // buscamos el usuario por id, findOrFail lanza una excepcion si no encuentra el usuario
+        //creamos una contraseña temporal aleatoria para que se la pase al usuario
+        $nuevaContraseñaTemporal = Str::random(8); // generamos una contraseña temporal aleatoria de 8 caracteres
+        $user->password = Hash::make($nuevaContraseñaTemporal); // encriptamos la contraseña temporal
+        $user->save(); // guardamos el usuario
+        return back()->with('message', "Contraseña restaurada. Nueva contraseña: " . $nuevaContraseñaTemporal); // retornamos la contraseña temporal
     }
 }

@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Check } from 'lucide-react';
+import { ChevronDown, Check, Search } from 'lucide-react';
 
 export default function SelectEmpresa({ empresasDisponibles = [], selectedIds = [], onChange }) {
 const [isOpen, setIsOpen] = useState(false);
 const dropdownRef = useRef(null);
+const [search, setSearch] = useState('');
 
 useEffect(() => {
     
@@ -31,6 +32,11 @@ useEffect(() => {
         onChange(updateIds);
     }
 
+const empresasFiltradas = empresasDisponibles.filter(empresa => 
+    empresa.razonSocial.toLowerCase().includes(search.toLowerCase())
+);
+
+
     return (
         <div className="relative w-64 text-left" ref={dropdownRef}>
             <button
@@ -52,7 +58,18 @@ useEffect(() => {
                     {empresasDisponibles.length === 0 ? (
                         <div className="text-xs text-slate-500 p-2 text-center">No hay empresas disponibles</div>
                     ) : (
-                        empresasDisponibles.map((empresa) => {
+                        <>
+                        <div className="p-2 border-b border-gray-200 dark:border-gray-800">
+                            <input 
+                                type="text" 
+                                placeholder="Buscar empresa..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="w-full bg-white dark:bg-[#070b14] border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
+                            />
+                        </div>
+
+                        {empresasFiltradas.map((empresa) => {
                             const isSelected = selectedIds.includes(empresa.id);
                             return (
                                 <button
@@ -67,7 +84,8 @@ useEffect(() => {
                                     {isSelected && <Check className="w-3.5 h-3.5 text-blue-400 shrink-0" />}
                                 </button>
                             );
-                        })
+                        })}
+                        </>
                     )}
                 </div>
             )}

@@ -9,6 +9,7 @@ use App\Http\Controllers\DeclaracionController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmpresaUsuarioController;
 use App\Models\Declaracion;
 use App\Models\Estado;
 use App\Models\Empresa;
@@ -36,6 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/empresas', [EmpresaController::class, 'store'])->name('empresas.store');
     Route::put('/empresas/{id}', [EmpresaController::class, 'update'])->name('empresas.update');
     Route::delete('/empresas/{id}', [EmpresaController::class, 'destroy'])->name('empresas.destroy');
+    Route::get('/empresas/{id}/usuarios', [EmpresaUsuarioController::class, 'getUsuarios'])->name('empresas.usuarios');
+    Route::get('/usuarios/{id}/empresas', [EmpresaUsuarioController::class, 'getEmpresas'])->name('usuarios.empresas');
 
     Route::get('/declaraciones', [DeclaracionController::class, 'index'])->name('declaraciones.index');
     Route::post('/declaraciones', [DeclaracionController::class, 'store'])->name('declaraciones.store');
@@ -58,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
     Route::put('/usuarios/{id}', [UserController::class, 'update'])->name('usuarios.update');
     Route::delete('/usuarios/{id}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+    Route::post('/usuarios/{id}/restaurar-password', [UserController::class, 'restaurarContraseña'])->name('usuarios.restaurarContraseña');
 });
 
 require __DIR__.'/auth.php';

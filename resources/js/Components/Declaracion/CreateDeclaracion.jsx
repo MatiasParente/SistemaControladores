@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { Building2, Calendar, FileSpreadsheet, Check, AlertCircle, Loader2 } from "lucide-react";
-
+import Mensaje from '@/Components/Mensaje';
 export default function CreateDeclaracion({ empresas = [], estados = [] }) {
 
     const estadoPendiente = estados.find(e => e.tipoEstado === 'Pendiente') || estados[0];
     
+    const { flash } = usePage().props;
+
     //le pedimos al sistema que nos de la fecha actual y la pasamos a string
     const currentYear = new Date().getFullYear().toString();
 
@@ -52,7 +54,6 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
         post(route('declaraciones.store'), {
             onSuccess: () => {
                 reset('Original', 'IRAE', 'Patrimonio', 'Balance', 'idEmpresa');
-                alert('¡Declaración creada con éxito!');
             },
             onError: (err) => {
                 console.error("Errores al crear declaración:", err);
@@ -191,6 +192,7 @@ export default function CreateDeclaracion({ empresas = [], estados = [] }) {
                     )}
                 </button>
             </form>
+            <Mensaje mensaje={flash.message} />
         </div>
     );
 }

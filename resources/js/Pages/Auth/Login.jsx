@@ -46,7 +46,7 @@ export default function Login({ status, canResetPassword }) {
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 text-white rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                        className="mt-1 block w-full bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 text-black dark:text-white rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                         autoComplete="username"
                         isFocused={true}
                         onChange={(e) => setData('email', e.target.value)}
@@ -60,15 +60,6 @@ export default function Login({ status, canResetPassword }) {
                 <div>
                     <div className="flex justify-between items-center mb-1.5">
                         <InputLabel htmlFor="password" value="Contraseña" className="text-slate-700 dark:text-slate-300 font-medium block" />
-                        
-                        {canResetPassword && (
-                            <Link
-                                href={route('password.request')}
-                                className="text-xs text-slate-400 hover:text-blue-400 transition-colors underline underline-offset-2"
-                            >
-                                ¿Olvidaste tu contraseña?
-                            </Link>
-                        )}
                     </div>
 
                     <TextInput
@@ -76,7 +67,7 @@ export default function Login({ status, canResetPassword }) {
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 text-white rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                        className="mt-1 block w-full bg-white dark:bg-[#070b14] border border-gray-200 dark:border-gray-800 text-black dark:text-white rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
                         placeholder="••••••••"

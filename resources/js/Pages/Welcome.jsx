@@ -13,7 +13,7 @@ export default function Welcome({ auth }) {
                     
                     <div className="space-y-3">
                         <h1 className="text-5xl font-extrabold tracking-tight text-dark dark:text-white">
-                            Welcome <span className="text-emerald-400">Ctrl</span>
+                            Bienvenido <span className="text-emerald-400">Ctrl</span>
                         </h1>
                         <p className="text-slate-400 text-sm max-w-sm mx-auto">
                             Gestión inteligente de obligaciones fiscales y declaraciones contables.

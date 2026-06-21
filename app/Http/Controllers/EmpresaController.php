@@ -58,7 +58,7 @@ class EmpresaController extends Controller
         }
         $empresas = $queryEmpresas->with(['user'])->latest()->paginate(5)->withQueryString(); 
         $usuarios = User::select('id', 'name', 'email')->orderBy('name')->get();
-        
+
         return Inertia::render('Empresas/Index', [
             'empresas' => $empresas,
             'filtroActual' => $buscar,

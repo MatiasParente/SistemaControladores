@@ -1,10 +1,20 @@
 import { useState } from 'react';
 import { router, useForm, Link, usePage } from '@inertiajs/react';
 import { Trash2, Edit, FileText, Check, X, Users, Clock, CheckCircle2, RefreshCw, XCircle, Calendar } from 'lucide-react';
+import RelacionesModal from '@/Components/RelacionesModal';
+import Mensaje from '@/Components/Mensaje';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 export default function ListEmpresa({ empresas }) {
     // Estado para controlar qué fila está en modo edición
     const [editingId, setEditingId] = useState(null);
+
+    const { flash } = usePage().props;
+
+    // Estado para el modal de usuarios
+    const [modalConfig, setModalConfig] = useState({ isOpen: false, url: '', title: '' });
+    
+    const [confirmConfig, setConfirmConfig] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
     
     // obtener el usuario
     const user = usePage().props.auth.user;
@@ -45,13 +55,16 @@ export default function ListEmpresa({ empresas }) {
     };
 
     const eliminarEmpresa = (id) => {
-    if (confirm('¿Estás seguro de que deseas eliminar esta empresa?')) {
-        router.delete(route('empresas.destroy', id), {
-            onSuccess: () => {
-                alert('Empresa eliminada con éxito.');
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Eliminar Empresa',
+            message: '¿Estás seguro de que deseas eliminar esta empresa? Esta acción no se puede deshacer.',
+            onConfirm: () => {
+                router.delete(route('empresas.destroy', id), {
+                    onSuccess: () => {}
+                });
             }
         }); 
-    }   
 };
 
     return (
@@ -141,7 +154,7 @@ export default function ListEmpresa({ empresas }) {
                                                     type="text"
                                                     value={data.razonSocial}
                                                     onChange={e => setData('razonSocial', e.target.value)}
-                                                    className="w-full bg-gray-50 dark:bg-[#070b14] md:bg-gray-50 dark:bg-[#070b14] bg-slate-50 dark:bg-slate-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
+                                                    className="w-full bg-white dark:bg-[#070b14] md:bg-gray-50 dark:bg-[#070b14] bg-slate-50 dark:bg-slate-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
                                                 />
                                             ) : (
                                                 <div className="font-semibold text-slate-800 dark:text-slate-200">{empresa.razonSocial}</div>
@@ -157,7 +170,7 @@ export default function ListEmpresa({ empresas }) {
                                                     type="text"
                                                     value={data.rut}
                                                     onChange={e => setData('rut', e.target.value)}
-                                                    className="w-full bg-gray-50 dark:bg-[#070b14] md:bg-gray-50 dark:bg-[#070b14] bg-slate-50 dark:bg-slate-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
+                                                    className="w-full bg-white dark:bg-[#070b14] md:bg-gray-50 dark:bg-[#070b14] bg-slate-50 dark:bg-slate-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
                                                 />
                                             ) : (
                                                 empresa.rut
@@ -173,7 +186,7 @@ export default function ListEmpresa({ empresas }) {
                                                     type="text"
                                                     value={data.direccion}
                                                     onChange={e => setData('direccion', e.target.value)}
-                                                    className="w-full bg-gray-50 dark:bg-[#070b14] md:bg-gray-50 dark:bg-[#070b14] bg-slate-50 dark:bg-slate-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
+                                                    className="w-full bg-white dark:bg-[#070b14] md:bg-gray-50 dark:bg-[#070b14] bg-slate-50 dark:bg-slate-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:border-blue-500"
                                                 />
                                             ) : (
                                                 empresa.direccion
@@ -191,18 +204,32 @@ export default function ListEmpresa({ empresas }) {
                                                             className="group relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 cursor-help hover:bg-blue-500/20 transition-all duration-300"
                                                         >
                                                             <Users className="w-4 h-4" />
-                                                            <span className="font-semibold text-sm">
+                                                            <span className="font-semibold text-sm whitespace-nowrap">
                                                                 {empresa.user.length} {empresa.user.length === 1 ? 'Usuario' : 'Usuarios'}
                                                             </span>
                                                             
-                                                            <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max max-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                            <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max max-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                                 <div className="bg-slate-100 dark:bg-slate-800 border border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-2 px-3 shadow-xl">
                                                                     <div className="font-semibold mb-1 border-b border-slate-700 pb-1.5 text-slate-400">Usuarios Asignados</div>
                                                                     <ul className="text-left max-h-32 overflow-y-auto custom-scrollbar mt-1.5 space-y-1">
-                                                                        {empresa.user.map((user, idx) => (
+                                                                        {empresa.user.slice(0, 10).map((user, idx) => (
                                                                             <li key={user.id || idx} className="truncate text-slate-700 dark:text-slate-300">{user.name}</li>
                                                                         ))}
                                                                     </ul>
+                                                                    {empresa.user.length > 10 && (
+                                                                        <div className="mt-2 pt-2 border-t border-slate-700">
+                                                                            <button 
+                                                                                onClick={() => setModalConfig({ 
+                                                                                    isOpen: true, 
+                                                                                    url: `/empresas/${empresa.id}/usuarios`, 
+                                                                                    title: `Usuarios de ${empresa.razonSocial}` 
+                                                                                })}
+                                                                                className="w-full text-center text-xs font-semibold text-blue-400 hover:text-blue-300 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 transition-colors"
+                                                                            >
+                                                                                Ver todos ({empresa.user.length})
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                                 <div className="hidden md:block w-2.5 h-2.5 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                                 <div className="md:hidden w-2.5 h-2.5 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -210,7 +237,7 @@ export default function ListEmpresa({ empresas }) {
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium bg-slate-100 dark:bg-slate-800/40 text-slate-500 border border-slate-700/50">
+                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium bg-slate-100 dark:bg-slate-800/40 text-slate-500 border border-slate-700/50 whitespace-nowrap">
                                                         <Users className="w-4 h-4 opacity-50" />
                                                         Ninguno
                                                     </span>
@@ -226,7 +253,7 @@ export default function ListEmpresa({ empresas }) {
                                                 <div className="group relative flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 cursor-help hover:bg-orange-500/20 transition-colors">
                                                     <Clock className="w-4 h-4" />
                                                     <span className="font-bold text-sm">{empresa.en_pendiente_count}</span>
-                                                    <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                    <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                         <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-1.5 px-3 shadow-xl border border-slate-700">Pendientes</div>
                                                         <div className="hidden md:block w-2 h-2 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                         <div className="md:hidden w-2 h-2 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -238,7 +265,7 @@ export default function ListEmpresa({ empresas }) {
                                                 <div className="group relative flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 cursor-help hover:bg-blue-500/20 transition-colors">
                                                     <RefreshCw className="w-4 h-4" />
                                                     <span className="font-bold text-sm">{empresa.en_proceso_count}</span>
-                                                    <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                    <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                         <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-1.5 px-3 shadow-xl border border-slate-700">En Proceso</div>
                                                         <div className="hidden md:block w-2 h-2 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                         <div className="md:hidden w-2 h-2 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -250,7 +277,7 @@ export default function ListEmpresa({ empresas }) {
                                                 <div className="group relative flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 cursor-help hover:bg-emerald-500/20 transition-colors">
                                                     <CheckCircle2 className="w-4 h-4" />
                                                     <span className="font-bold text-sm">{empresa.finalizadas_count}</span>
-                                                    <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                    <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                         <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-1.5 px-3 shadow-xl border border-slate-700">Finalizadas</div>
                                                         <div className="hidden md:block w-2 h-2 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                         <div className="md:hidden w-2 h-2 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -262,7 +289,7 @@ export default function ListEmpresa({ empresas }) {
                                                 <div className="group relative flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 cursor-help hover:bg-rose-500/20 transition-colors">
                                                     <XCircle className="w-4 h-4" />
                                                     <span className="font-bold text-sm">{empresa.rechazadas_count}</span>
-                                                    <div className="absolute bottom-full md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                    <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                                         <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-1.5 px-3 shadow-xl border border-slate-700">Rechazadas</div>
                                                         <div className="hidden md:block w-2 h-2 bg-slate-100 dark:bg-slate-800 border-b border-r border-slate-700 transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                                         <div className="md:hidden w-2 h-2 bg-slate-100 dark:bg-slate-800 border-t border-l border-slate-700 transform rotate-45 absolute -top-1 left-4"></div>
@@ -288,7 +315,7 @@ export default function ListEmpresa({ empresas }) {
                                                     <button 
                                                         onClick={() => guardarEdicion(empresa.id)}
                                                         disabled={processing}
-                                                        className="inline-flex flex-1 md:flex-none items-center justify-center p-2 md:p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
+                                                        className="inline-flex flex-1 md:flex-none items-center justify-center p-2 md:p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white"
                                                         title="Guardar Cambios"
                                                     >
                                                         <Check className="w-4 h-4 mr-2 md:mr-0" />
@@ -296,7 +323,7 @@ export default function ListEmpresa({ empresas }) {
                                                     </button>
                                                     <button 
                                                         onClick={cancelarEdicion}
-                                                        className="inline-flex flex-1 md:flex-none items-center justify-center p-2 md:p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
+                                                        className="inline-flex flex-1 md:flex-none items-center justify-center p-2 md:p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300"
                                                         title="Cancelar"
                                                     >
                                                         <X className="w-4 h-4 mr-2 md:mr-0" />
@@ -394,6 +421,20 @@ export default function ListEmpresa({ empresas }) {
                     })()}
             </div>
         </div>
+        <Mensaje mensaje={flash.message} />
+        <RelacionesModal 
+            isOpen={modalConfig.isOpen}
+            onClose={() => setModalConfig({ ...modalConfig, isOpen: false })}
+            url={modalConfig.url}
+            title={modalConfig.title}
+        />
+        <ConfirmModal 
+            isOpen={confirmConfig.isOpen}
+            title={confirmConfig.title}
+            message={confirmConfig.message}
+            onConfirm={confirmConfig.onConfirm}
+            onCancel={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        />
     </div>
     );
 }
