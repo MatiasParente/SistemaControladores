@@ -3,8 +3,7 @@
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <url-del-repositorio>
-cd <nombre-del-proyecto>
+git clone https://github.com/MatiasParente/SistemaControladores
 ```
 
 ### 2. Configurar las variables de entorno
