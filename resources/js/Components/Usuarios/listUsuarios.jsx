@@ -149,13 +149,16 @@ export default function ListUsuarios({ users, empresas = [] }) {
                                                 </div>
                                             ):(
                                                 usuario.empresas?.length > 0 ? (
-                                                    <div className="group relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 cursor-help hover:bg-emerald-500/20">
+                                                    <div 
+                                                        tabIndex="0"
+                                                        className="group relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 cursor-pointer md:cursor-help hover:bg-emerald-500/20 focus:outline-none"
+                                                    >
                                                         <Building2 className="w-4 h-4" />
                                                         <span className="font-semibold text-sm">
                                                             {usuario.empresas.length} {usuario.empresas.length === 1 ? 'Empresa' : 'Empresas'}
                                                         </span>
                                                         
-                                                        <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max max-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                        <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max max-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus:opacity-100 group-focus:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 z-50">
                                                             <div className="bg-slate-100 dark:bg-slate-800 border border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-2 px-3 shadow-xl">
                                                                 <div className="font-semibold mb-1 border-b border-slate-700 pb-1.5 text-slate-400">Empresas Asignadas</div>
                                                                 <ul className="text-left max-h-32 overflow-y-auto custom-scrollbar mt-1.5 space-y-1">
@@ -166,13 +169,14 @@ export default function ListUsuarios({ users, empresas = [] }) {
                                                                 {usuario.empresas.length > 10 && (
                                                                     <div className="mt-2 pt-2 border-t border-slate-700">
                                                                         <button 
-                                                                            onClick={() =>
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
                                                                                 setModalConfig({
                                                                                     isOpen: true,
                                                                                     url: `/usuarios/${usuario.id}/empresas`,
                                                                                     title: `Empresas de ${usuario.name}`
-                                                                                })
-                                                                            }
+                                                                                });
+                                                                            }}
                                                                             className="w-full text-center text-xs font-semibold text-blue-400 hover:text-blue-300 py-1 rounded bg-blue-500/10 hover:bg-blue-500/20 transition-colors"
                                                                         >
                                                                             Ver todas ({usuario.empresas.length})

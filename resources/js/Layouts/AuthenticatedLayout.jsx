@@ -183,6 +183,7 @@ function SidebarContent({ user, activeRoute }) {
                     Cerrar Sesión
                 </Link>
             </div>
+            <footer className='text-center text-xs text-slate-400 dark:text-slate-500'>© Copyright {new Date().getFullYear()} Fritz. Todos los derechos reservados.</footer>
         </div>
     );
 }

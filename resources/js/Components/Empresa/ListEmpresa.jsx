@@ -201,14 +201,15 @@ export default function ListEmpresa({ empresas }) {
                                                 {empresa.user?.length > 0 ? (
                                                     <div className="flex items-center">
                                                         <div 
-                                                            className="group relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 cursor-help hover:bg-blue-500/20 transition-all duration-300"
+                                                            tabIndex="0"
+                                                            className="group relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 cursor-pointer md:cursor-help hover:bg-blue-500/20 transition-all duration-300 focus:outline-none"
                                                         >
                                                             <Users className="w-4 h-4" />
                                                             <span className="font-semibold text-sm whitespace-nowrap">
                                                                 {empresa.user.length} {empresa.user.length === 1 ? 'Usuario' : 'Usuarios'}
                                                             </span>
                                                             
-                                                            <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max max-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                                            <div className="absolute top-full md:top-auto md:bottom-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 md:mb-2 md:mt-0 w-max max-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus:opacity-100 group-focus:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 z-50">
                                                                 <div className="bg-slate-100 dark:bg-slate-800 border border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-xl py-2 px-3 shadow-xl">
                                                                     <div className="font-semibold mb-1 border-b border-slate-700 pb-1.5 text-slate-400">Usuarios Asignados</div>
                                                                     <ul className="text-left max-h-32 overflow-y-auto custom-scrollbar mt-1.5 space-y-1">
@@ -219,11 +220,14 @@ export default function ListEmpresa({ empresas }) {
                                                                     {empresa.user.length > 10 && (
                                                                         <div className="mt-2 pt-2 border-t border-slate-700">
                                                                             <button 
-                                                                                onClick={() => setModalConfig({ 
-                                                                                    isOpen: true, 
-                                                                                    url: `/empresas/${empresa.id}/usuarios`, 
-                                                                                    title: `Usuarios de ${empresa.razonSocial}` 
-                                                                                })}
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setModalConfig({ 
+                                                                                        isOpen: true, 
+                                                                                        url: `/empresas/${empresa.id}/usuarios`, 
+                                                                                        title: `Usuarios de ${empresa.razonSocial}` 
+                                                                                    });
+                                                                                }}
                                                                                 className="w-full text-center text-xs font-semibold text-blue-400 hover:text-blue-300 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 transition-colors"
                                                                             >
                                                                                 Ver todos ({empresa.user.length})
