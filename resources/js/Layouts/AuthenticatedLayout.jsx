@@ -5,7 +5,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
-import ErrorModal from '@/Components/ErrorModal';
+import ErrorModal from '@/Components/general/ErrorModal';
 
 // header es lo de arriba de las paginas, children es el contenido de la pagina que si se borra queda todo en blanco
 export default function AuthenticatedLayout({ header, children }) {

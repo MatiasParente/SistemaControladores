@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { router, Link, useForm, usePage } from '@inertiajs/react';
 import { Trash2, Edit, Check, X, Building2, Key } from 'lucide-react';
 import SelectEmpresa from '@/Components/Usuarios/SelectEmpresa';
-import Mensaje from '@/Components/Mensaje';
+import Mensaje from '@/Components/general/Mensaje';
 import RelacionesModal from '@/Components/RelacionesModal';
-import ConfirmModal from '@/Components/ConfirmModal';
+import ConfirmModal from '@/Components/general/ConfirmModal';
 
 export default function ListUsuarios({ users, empresas = [] }) {
     const [editingId, setEditingId] = useState(null);

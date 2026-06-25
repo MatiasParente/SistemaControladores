@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { router, useForm, Link, usePage } from '@inertiajs/react';
 import { Trash2, Edit, FileText, Check, X, Users, Clock, CheckCircle2, RefreshCw, XCircle, Calendar } from 'lucide-react';
 import RelacionesModal from '@/Components/RelacionesModal';
-import Mensaje from '@/Components/Mensaje';
-import ConfirmModal from '@/Components/ConfirmModal';
+import Mensaje from '@/Components/general/Mensaje';
+import ConfirmModal from '@/Components/general/ConfirmModal';
 
 export default function ListEmpresa({ empresas }) {
     // Estado para controlar qué fila está en modo edición

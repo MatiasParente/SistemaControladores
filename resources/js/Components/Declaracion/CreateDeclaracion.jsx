@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Building2, Calendar, FileSpreadsheet, Check, AlertCircle, Loader2 } from "lucide-react";
-import Mensaje from '@/Components/Mensaje';
+import Mensaje from '@/Components/general/Mensaje';
 export default function CreateDeclaracion({ empresas = [], estados = [] }) {
 
     const estadoPendiente = estados.find(e => e.tipoEstado === 'Pendiente') || estados[0];

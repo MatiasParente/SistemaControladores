@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from 'react'; 
 import { Link, router, usePage } from '@inertiajs/react';
 import { Calendar, Download, X, Trash2, RotateCcw } from 'lucide-react';
-import Mensaje from '@/Components/Mensaje';
-import ConfirmModal from '@/Components/ConfirmModal';
+import Mensaje from '@/Components/general/Mensaje';
+import ConfirmModal from '@/Components/general/ConfirmModal';
 
 export default function RecentDeclarations({ declaraciones }) {
     const fileInputRef = useRef(null);

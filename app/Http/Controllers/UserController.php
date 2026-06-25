@@ -40,7 +40,6 @@ class UserController extends Controller implements HasMiddleware
             ->when($buscar, function ($query) use ($buscar) { // si existe el parametro de busqueda, aplicamos un filtro
                 $query->where(function ($q) use ($buscar) {
                     $q->where('name', 'ILIKE', "%{$buscar}%") // buscamos por nombre
-                    ->orWhere('apellido', 'ILIKE', "%{$buscar}%") // o por apellido
                     ->orWhere('email', 'ILIKE', "%{$buscar}%"); // o por email
                 });
             })
